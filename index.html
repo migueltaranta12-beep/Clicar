@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"class="">
+    <title>CliCar | Catálogo de Vehículos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <img src="img/logo.png" alt="Logo" style="max-width: 200px; display: block; margin: 0 auto 10px auto;">
+
+        <h1>CliCar</h1>
+        <p>Tu próximo vehículo está aquí</p>
+    </header>
+
+    <div class="container">
+        <div class="grid" id="listaAutos">
+            <!-- Los autos se cargan aquí automáticamente -->
+        </div>
+    </div>
+
+    <footer style="margin: 40px; text-align: center;">
+        <a href="admin.html" style="color: #666; font-size: 0.8rem;">Acceso exclusivo socios</a>
+    </footer>
+
+    <script>
+        const lista = document.getElementById('listaAutos');
+        const autos = JSON.parse(localStorage.getItem('autosCliCar')) || [];
+        
+        if(autos.length === 0) {
+            lista.innerHTML = '<p style="text-align:center; width:100%;">No hay vehículos cargados actualmente.</p>';
+        } else {
+            autos.forEach(auto => {
+                lista.innerHTML += `
+                    <div class="card">
+                        <h3>${auto.modelo}</h3>
+                        <p><strong>Precio:</strong> $${auto.precio} USD</p>
+                        <p>${auto.descripcion}</p>
+                        <a href="https://wa.me/549XXXXXX?text=Hola, me interesa el ${auto.modelo}" class="btn-whatsapp">Consultar por WhatsApp</a>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
+:root { --azul: #003399; --rojo: #E30613; --verde: #25d366; --blanco: #ffffff; }
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+body { background: #f4f4f4; color: #333; line-height: 1.6; }
+
+header { background: var(--azul); color: var(--blanco); padding: 2rem; text-align: center; border-bottom: 5px solid var(--rojo); }
+
+.container { max-width: 1000px; margin: 20px auto; padding: 0 20px; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+
+.card { background: var(--blanco); padding: 20px; border-radius: 12px; border-top: 5px solid var(--rojo); box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s; }
+.card:hover { transform: translateY(-5px); }
+.card h3 { color: var(--azul); margin-bottom: 10px; }
+
+.btn-whatsapp { display: block; margin-top: 15px; padding: 12px; background: var(--verde); color: var(--blanco); text-align: center; text-decoration: none; border-radius: 6px; font-weight: bold; }
+
+.admin-card { background: var(--blanco); max-width: 600px; margin: 50px auto; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+input, textarea { width: 100%; margin-bottom: 20px; padding: 12px; border: 2px solid #ddd; border-radius: 6px; }
+button { width: 100%; padding: 15px; background: var(--azul); color: var(--blanco); border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>CliCar | Gestión de Stock</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="admin-card">
+        <h2>Cargar vehículo al sistema</h2>
+        <form id="formAuto">
+            <input type="text" id="modelo" placeholder="Modelo (Ej: Toyota Hilux 2024)" required>
+            <input type="text" id="precio" placeholder="Precio en USD" required>
+            <textarea id="descripcion" rows="4" placeholder="Detalles, kilómetros, motor..."></textarea>
+            <button type="submit">Guardar y publicar</button>
+        </form>
+        <br>
+        <a href="index.html">← Volver al catálogo</a>
+    </div>
+
+    <script>
+        document.getElementById('formAuto').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nuevo = {
+                modelo: document.getElementById('modelo').value,
+                precio: document.getElementById('precio').value,
+                descripcion: document.getElementById('descripcion').value
+            };
+            let autos = JSON.parse(localStorage.getItem('autosCliCar')) || [];
+            autos.push(nuevo);
+            localStorage.setItem('autosCliCar', JSON.stringify(autos));
+            alert('¡Publicación exitosa!');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
