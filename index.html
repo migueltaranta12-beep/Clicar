@@ -3,16 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CliCar | Catálogo</title>
+    <title>CliCar | Catálogo de Vehículos</title>
     <style>
         body { font-family: sans-serif; text-align: center; background: #f4f4f4; margin: 0; }
         header { background: #003399; color: white; padding: 20px; }
+        header img { max-width: 150px; margin-bottom: 10px; }
         .card { background: white; margin: 20px auto; padding: 15px; width: 80%; max-width: 300px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
     </style>
 </head>
 <body>
+
     <header>
+        <!-- Asegúrate de que el archivo logo.jpg esté en tu repositorio -->
+        <img src="logo.jpg" alt="Logo CliCar">
         <h1>CliCar</h1>
         <p>Tu próximo vehículo está aquí</p>
     </header>
@@ -43,7 +47,7 @@
                         <div class="card">
                             <h3>${auto.Modelo}</h3>
                             <p>Precio: ${auto.Precio} USD</p>
-                            <img src="${auto.Foto}" alt="Imagen de ${auto.Modelo}" onerror="this.style.display='none'">
+                            <img src="${auto.Foto}" alt="${auto.Modelo}" onerror="this.style.display='none'">
                         </div>
                     `;
                 });
@@ -54,4 +58,5 @@
         cargarAutos();
     </script>
 </body>
-</html>
+    </html>
+    
