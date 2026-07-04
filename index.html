@@ -3,19 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CliCar | Catálogo de Vehículos</title>
+    <title>CliCar | Catálogo</title>
     <style>
-        :root { --azul: #003399; --blanco: #ffffff; }
-        body { margin: 0; font-family: sans-serif; text-align: center; background: #f4f4f4; }
-        header { background: var(--azul); color: var(--blanco); padding: 20px; }
-        .card { background: var(--blanco); margin: 20px auto; padding: 15px; width: 80%; max-width: 300px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        img { max-width: 100%; border-radius: 8px; }
+        body { font-family: sans-serif; text-align: center; background: #f4f4f4; margin: 0; }
+        header { background: #003399; color: white; padding: 20px; }
+        .card { background: white; margin: 20px auto; padding: 15px; width: 80%; max-width: 300px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <header>
-        <img src="logo.jpg" alt="Logo" style="max-width: 200px;">
         <h1>CliCar</h1>
         <p>Tu próximo vehículo está aquí</p>
     </header>
@@ -24,7 +22,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const supabase = supabase.createClient('https://hvdmwzbvnrxhhhqdrck.supabase.co', 'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1');
+        const supabase = supabase.createClient(
+            'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
+            'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
+        );
 
         async function cargarAutos() {
             const contenedor = document.getElementById('listaAutos');
@@ -41,7 +42,7 @@
                     <div class="card">
                         <h3>${auto.Modelo}</h3>
                         <p>Precio: ${auto.Precio} USD</p>
-                        <img src="${auto.Foto}" alt="Auto">
+                        <img src="${auto.Foto}" alt="Imagen de ${auto.Modelo}" onerror="this.style.display='none'">
                     </div>
                 `;
             });
