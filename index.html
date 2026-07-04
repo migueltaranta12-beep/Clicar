@@ -2,36 +2,83 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Test Final</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CliCar | Catálogo</title>
+    <style>
+        /* COLORES Y ESTILO */
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            text-align: center; 
+            background-color: #1a1a1a; /* Fondo oscuro */
+            color: #ffffff; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        h1 { color: #ffcc00; } /* Amarillo CliCar */
+        
+        .card { 
+            background: #2d2d2d; 
+            margin: 20px auto; 
+            padding: 15px; 
+            width: 90%; 
+            max-width: 350px; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            border: 1px solid #444;
+        }
+        
+        .auto-img { 
+            width: 100%; 
+            height: 200px; 
+            object-fit: cover; 
+            border-radius: 10px; 
+            margin-top: 10px; 
+        }
+        
+        .precio { color: #00ff88; font-weight: bold; font-size: 1.2em; }
+        .error { color: #ff4444; padding: 20px; }
+    </style>
 </head>
 <body>
-    <div id="status">Iniciando...</div>
 
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    
+    <h1>CliCar</h1>
+    <div id="listaAutos">Cargando catálogo...</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const statusDiv = document.getElementById('status');
-        
-        // Verificamos si la librería existe tras 2 segundos
-        setTimeout(() => {
-            if (typeof supabase === 'undefined') {
-                statusDiv.innerHTML = "❌ ERROR: No se pudo descargar la librería Supabase. ¿Tienes bloqueador de anuncios o restricción de red?";
-            } else {
-                statusDiv.innerHTML = "✅ Librería cargada. Intentando conectar...";
-                try {
-                    const client = supabase.createClient(
-                        'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
-                        'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
-                    );
-                    client.from('Autos').select('*').then(({data, error}) => {
-                        if(error) statusDiv.innerHTML = "❌ Error BD: " + error.message;
-                        else statusDiv.innerHTML = "✅ ÉXITO! Autos: " + data.length;
+        // Inicialización
+        const supabase = supabase.createClient(
+            'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
+            'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1',
+            { auth: { persistSession: false } }
+        );
+
+        async function cargarAutos() {
+            const contenedor = document.getElementById('listaAutos');
+            try {
+                const { data, error } = await supabase.from('Autos').select('*');
+                
+                if (error) throw error;
+                
+                contenedor.innerHTML = '';
+                if (data && data.length > 0) {
+                    data.forEach(auto => {
+                        contenedor.innerHTML += `
+                            <div class="card">
+                                <h3>${auto.Modelo || 'Sin nombre'}</h3>
+                                <p class="precio">$${auto.Precio || '0'}</p>
+                                <img src="${auto.Foto}" class="auto-img" alt="Foto de ${auto.Modelo}" onerror="this.style.display='none'">
+                            </div>
+                        `;
                     });
-                } catch(e) {
-                    statusDiv.innerHTML = "❌ Error init: " + e.message;
+                } else {
+                    contenedor.innerHTML = "<p>No hay vehículos disponibles.</p>";
                 }
+            } catch (err) {
+                contenedor.innerHTML = `<div class="error">Error de conexión: ${err.message}</div>`;
             }
-        }, 2000);
+        }
+        cargarAutos();
     </script>
 </body>
 </html>
