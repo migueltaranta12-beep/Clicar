@@ -1,2 +1,40 @@
-<h1>PRUEBA DE CONEXIÓN</h1>
-<p>Si ves esto, la web está funcionando.</p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagnóstico CliCar</title>
+</head>
+<body>
+    <div id="status" style="padding: 20px; font-family: sans-serif;">Iniciando conexión...</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const statusDiv = document.getElementById('status');
+        const supabase = supabase.createClient(
+            'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
+            'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
+        );
+
+        async function diagnostico() {
+            try {
+                const { data, error } = await supabase.from('Autos').select('*');
+                
+                if (error) {
+                    statusDiv.innerHTML = "❌ ERROR DE SUPABASE: " + JSON.stringify(error);
+                    return;
+                }
+                
+                if (!data || data.length === 0) {
+                    statusDiv.innerHTML = "✅ Conectado, pero la tabla está vacía.";
+                } else {
+                    statusDiv.innerHTML = "✅ ¡Conexión exitosa! Autos encontrados: " + data.length;
+                    console.log(data);
+                }
+            } catch (e) {
+                statusDiv.innerHTML = "❌ ERROR DE CÓDIGO: " + e.message;
+            }
+        }
+        diagnostico();
+    </script>
+</body>
+</html>
