@@ -3,71 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CliCar | Tu próximo vehículo</title>
+    <title>CliCar | Catálogo de Vehículos</title>
     <style>
-        body { margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f0f0f0; }
-        
-        /* Estilos institucionales */
-        .header { 
-            background-color: #003399; 
-            color: white; 
-            text-align: center; 
-            padding: 20px; 
-            border-bottom: 5px solid #cc0000; 
-        }
-        .logo { 
-            max-width: 200px; 
-            margin-bottom: 10px; 
-            border-radius: 8px;
-        }
-        .catalogo { padding: 20px; }
-        .card { 
-            background: white; 
-            margin-bottom: 20px; 
-            padding: 15px; 
-            border-radius: 8px; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
-            color: #333;
-        }
+        :root { --azul: #003399; --blanco: #ffffff; }
+        body { margin: 0; font-family: sans-serif; text-align: center; background: #f4f4f4; }
+        header { background: var(--azul); color: var(--blanco); padding: 20px; }
+        .card { background: var(--blanco); margin: 20px auto; padding: 15px; width: 80%; max-width: 300px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        img { max-width: 100%; border-radius: 8px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <!-- Logo integrado -->
-        <img src="https://github.com/migueltaranta12-beep/Clicar/blob/main/logo.jpg?raw=true" class="logo" alt="Logo CliCar">
+    <header>
+        <img src="logo.jpg" alt="Logo" style="max-width: 200px;">
         <h1>CliCar</h1>
         <p>Tu próximo vehículo está aquí</p>
-    </div>
+    </header>
 
-    <div class="catalogo" id="listaAutos">Cargando autos...</div>
+    <div id="listaAutos">Cargando autos...</div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const supabase = supabase.createClient(
-            'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
-            'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
-        );
+        const supabase = supabase.createClient('https://hvdmwzbvnrxhhhqdrck.supabase.co', 'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1');
 
         async function cargarAutos() {
-            const div = document.getElementById('listaAutos');
-            try {
-                const { data, error } = await supabase.from('Autos').select('*');
-                if (error) throw error;
-                
-                div.innerHTML = '';
-                data.forEach(auto => {
-                    div.innerHTML += `
-                        <div class="card">
-                            <h3>${auto.Modelo}</h3>
-                            <p>Precio: $${auto.Precio}</p>
-                            <img src="${auto.Foto}" style="width:100%">
-                        </div>
-                    `;
-                });
-            } catch (e) {
-                div.innerHTML = "Error cargando datos: " + e.message;
+            const contenedor = document.getElementById('listaAutos');
+            const { data, error } = await supabase.from('Autos').select('*');
+            
+            if (error) {
+                contenedor.innerHTML = "Error: " + error.message;
+                return;
             }
+
+            contenedor.innerHTML = '';
+            data.forEach(auto => {
+                contenedor.innerHTML += `
+                    <div class="card">
+                        <h3>${auto.Modelo}</h3>
+                        <p>Precio: ${auto.Precio} USD</p>
+                        <img src="${auto.Foto}" alt="Auto">
+                    </div>
+                `;
+            });
         }
         cargarAutos();
     </script>
