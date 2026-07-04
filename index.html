@@ -2,11 +2,20 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CliCar | Catálogo de Vehículos</title>
+    <style>
+        :root { --azul: #003399; --blanco: #ffffff; }
+        body { margin: 0; font-family: sans-serif; text-align: center; background: #f4f4f4; }
+        header { background: var(--azul); color: var(--blanco); padding: 20px; }
+        .card { background: var(--blanco); margin: 20px auto; padding: 15px; width: 80%; max-width: 300px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        img { max-width: 100%; border-radius: 8px; }
+    </style>
 </head>
 <body>
 
     <header>
+        <img src="logo.jpg" alt="Logo" style="max-width: 200px;">
         <h1>CliCar</h1>
         <p>Tu próximo vehículo está aquí</p>
     </header>
@@ -19,8 +28,6 @@
 
         async function cargarAutos() {
             const contenedor = document.getElementById('listaAutos');
-            
-            // Traemos los datos de la tabla 'Autos'
             const { data, error } = await supabase.from('Autos').select('*');
             
             if (error) {
@@ -29,19 +36,16 @@
             }
 
             contenedor.innerHTML = '';
-            
             data.forEach(auto => {
-                // AQUÍ USAMOS LAS COLUMNAS CON MAYÚSCULA
                 contenedor.innerHTML += `
                     <div class="card">
                         <h3>${auto.Modelo}</h3>
                         <p>Precio: ${auto.Precio} USD</p>
-                        <img src="${auto.Foto}" style="width:200px;">
+                        <img src="${auto.Foto}" alt="Auto">
                     </div>
                 `;
             });
         }
-        
         cargarAutos();
     </script>
 </body>
