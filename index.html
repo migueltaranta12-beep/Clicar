@@ -5,13 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CliCar | Tu próximo vehículo</title>
     <style>
-        body { 
-            margin: 0; 
-            padding: 0; 
-            font-family: Arial, sans-serif; 
-            background-color: #f0f0f0; 
-        }
-        /* Cabecera azul y línea roja recuperadas */
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f0f0f0; }
+        
+        /* Estilos institucionales */
         .header { 
             background-color: #003399; 
             color: white; 
@@ -20,11 +16,9 @@
             border-bottom: 5px solid #cc0000; 
         }
         .logo { 
-            max-width: 250px; 
+            max-width: 200px; 
             margin-bottom: 10px; 
-            display: block; 
-            margin-left: auto; 
-            margin-right: auto; 
+            border-radius: 8px;
         }
         .catalogo { padding: 20px; }
         .card { 
@@ -35,14 +29,13 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
             color: #333;
         }
-        .error { color: #cc0000; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <!-- AQUÍ VA TU LOGO -->
-        <img src="https://i.imgur.com/TuCodigoDeImagen.png" class="logo" alt="Logo CliCar">
+        <!-- Logo integrado -->
+        <img src="https://github.com/migueltaranta12-beep/Clicar/blob/main/logo.jpg?raw=true" class="logo" alt="Logo CliCar">
         <h1>CliCar</h1>
         <p>Tu próximo vehículo está aquí</p>
     </div>
@@ -73,7 +66,7 @@
                     `;
                 });
             } catch (e) {
-                div.innerHTML = '<p class="error">Error de conexión: ' + e.message + '</p>';
+                div.innerHTML = "Error cargando datos: " + e.message;
             }
         }
         cargarAutos();
