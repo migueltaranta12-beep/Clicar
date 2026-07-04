@@ -3,61 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CliCar | Catálogo</title>
+    <title>CliCar</title>
     <style>
-        body { font-family: sans-serif; text-align: center; background: #f4f4f4; margin: 0; }
+        body { font-family: sans-serif; text-align: center; background: #f4f4f4; }
         header { background: #003399; color: white; padding: 20px; }
         .card { background: white; margin: 20px auto; padding: 15px; width: 80%; max-width: 300px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        img { max-width: 100%; border-radius: 8px; }
     </style>
 </head>
 <body>
-
     <header>
         <img src="logo.jpg" alt="Logo" style="max-width: 150px;">
         <h1>CliCar</h1>
-        <p>Tu próximo vehículo está aquí</p>
     </header>
 
-    <div id="listaAutos">Cargando autos...</div>
+    <div id="listaAutos">Cargando...</div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Configuración de conexión
-        const SUPABASE_URL = 'https://hvdmwzbvnrxhhhqdrck.supabase.co';
-        const SUPABASE_KEY = 'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabase = supabase.createClient('https://hvdmwzbvnrxhhhqdrck.supabase.co', 'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1');
 
         async function cargarAutos() {
-            const contenedor = document.getElementById('listaAutos');
-            
-            // Intentamos traer los datos
+            // Se conecta a la tabla 'Autos'
             const { data, error } = await supabase.from('Autos').select('*');
             
             if (error) {
-                contenedor.innerHTML = "Error al conectar: " + error.message;
-                console.error("Error Supabase:", error);
+                document.getElementById('listaAutos').innerHTML = "Error: " + error.message;
                 return;
             }
 
-            if (!data || data.length === 0) {
-                contenedor.innerHTML = "No se encontraron autos en la base de datos.";
-                return;
-            }
-
-            // Si hay datos, los mostramos
+            const contenedor = document.getElementById('listaAutos');
             contenedor.innerHTML = '';
+            
             data.forEach(auto => {
+                // AQUÍ ESTÁ EL CAMBIO: usamos 'auto.Foto' con MAYÚSCULA
                 contenedor.innerHTML += `
                     <div class="card">
-                        <h3>${auto.Modelo || 'Sin nombre'}</h3>
-                        <p>Precio: ${auto.Precio || 'Consultar'} USD</p>
-                        <img src="${auto.Foto || ''}" alt="Foto del auto" onerror="this.style.display='none'">
+                        <h3>${auto.Modelo}</h3>
+                        <p>Precio: ${auto.Precio} USD</p>
+                        <img src="${auto.Foto}" style="width:100%;" onerror="this.style.display='none'">
                     </div>
                 `;
             });
         }
-        
         cargarAutos();
     </script>
 </body>
