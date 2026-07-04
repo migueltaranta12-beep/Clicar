@@ -11,7 +11,7 @@
             font-family: Arial, sans-serif; 
             background-color: #f0f0f0; 
         }
-        /* Cabecera azul y línea roja como en 396666.png */
+        /* Cabecera azul y línea roja recuperadas */
         .header { 
             background-color: #003399; 
             color: white; 
@@ -19,7 +19,13 @@
             padding: 20px; 
             border-bottom: 5px solid #cc0000; 
         }
-        .logo { max-width: 250px; margin-bottom: 10px; }
+        .logo { 
+            max-width: 250px; 
+            margin-bottom: 10px; 
+            display: block; 
+            margin-left: auto; 
+            margin-right: auto; 
+        }
         .catalogo { padding: 20px; }
         .card { 
             background: white; 
@@ -27,14 +33,16 @@
             padding: 15px; 
             border-radius: 8px; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            color: #333;
         }
+        .error { color: #cc0000; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <!-- Reemplaza el src con la URL de tu logo -->
-        <img src="URL_DE_TU_LOGO_AQUI" class="logo" alt="CliCar">
+        <!-- AQUÍ VA TU LOGO -->
+        <img src="https://i.imgur.com/TuCodigoDeImagen.png" class="logo" alt="Logo CliCar">
         <h1>CliCar</h1>
         <p>Tu próximo vehículo está aquí</p>
     </div>
@@ -65,7 +73,7 @@
                     `;
                 });
             } catch (e) {
-                div.innerHTML = "Error cargando datos: " + e.message;
+                div.innerHTML = '<p class="error">Error de conexión: ' + e.message + '</p>';
             }
         }
         cargarAutos();
