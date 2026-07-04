@@ -2,11 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>CliCar | Catálogo</title>
+    <title>CliCar</title>
 </head>
 <body>
     <h1>CliCar</h1>
-    <div id="listaAutos">Iniciando conexión...</div>
+    <div id="listaAutos">Cargando autos...</div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -15,28 +15,31 @@
             'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
         );
 
-        async function probarConexion() {
+        async function cargarAutos() {
             const contenedor = document.getElementById('listaAutos');
-            try {
-                // Hacemos una consulta simple
-                const { data, error } = await supabase.from('Autos').select('*');
-                
-                if (error) {
-                    contenedor.innerHTML = "ERROR DE SUPABASE: " + error.message;
-                    return;
-                }
-                
-                if (data.length === 0) {
-                    contenedor.innerHTML = "La tabla está vacía.";
-                    return;
-                }
+            const { data, error } = await supabase.from('Autos').select('*');
+            
+            if (error) {
+                contenedor.innerHTML = "Error: " + error.message;
+                return;
+            }
 
-                contenedor.innerHTML = "¡Conectado! Autos encontrados: " + data.length;
-            } catch (err) {
-                contenedor.innerHTML = "ERROR CRÍTICO: " + err.message;
+            contenedor.innerHTML = '';
+            if (data.length === 0) {
+                contenedor.innerHTML = "No hay autos.";
+            } else {
+                data.forEach(auto => {
+                    contenedor.innerHTML += `
+                        <div>
+                            <h3>${auto.Modelo}</h3>
+                            <p>Precio: ${auto.Precio}</p>
+                            <img src="${auto.Foto}" width="200">
+                        </div>
+                    `;
+                });
             }
         }
-        probarConexion();
+        cargarAutos();
     </script>
 </body>
 </html>
