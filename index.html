@@ -12,7 +12,6 @@
     </style>
 </head>
 <body>
-
     <header>
         <h1>CliCar</h1>
         <p>Tu próximo vehículo está aquí</p>
@@ -37,15 +36,20 @@
             }
 
             contenedor.innerHTML = '';
-            data.forEach(auto => {
-                contenedor.innerHTML += `
-                    <div class="card">
-                        <h3>${auto.Modelo}</h3>
-                        <p>Precio: ${auto.Precio} USD</p>
-                        <img src="${auto.Foto}" alt="Imagen de ${auto.Modelo}" onerror="this.style.display='none'">
-                    </div>
-                `;
-            });
+            
+            if (data && data.length > 0) {
+                data.forEach(auto => {
+                    contenedor.innerHTML += `
+                        <div class="card">
+                            <h3>${auto.Modelo}</h3>
+                            <p>Precio: ${auto.Precio} USD</p>
+                            <img src="${auto.Foto}" alt="Imagen de ${auto.Modelo}" onerror="this.style.display='none'">
+                        </div>
+                    `;
+                });
+            } else {
+                contenedor.innerHTML = "No hay autos para mostrar.";
+            }
         }
         cargarAutos();
     </script>
