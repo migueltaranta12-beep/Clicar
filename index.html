@@ -2,29 +2,57 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>CliCar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CliCar Catálogo</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f0f0f0; }
+        .card { background: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        #app { color: #333; }
+        .error { color: red; font-weight: bold; }
+    </style>
 </head>
 <body>
-    <div id="status">Cargando...</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.js"></script>
-    
+    <h1>Catálogo CliCar</h1>
+    <div id="app">Cargando datos...</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Verificamos si la librería cargó
-        if (typeof supabase === 'undefined') {
-            document.getElementById('status').innerHTML = "Error: La librería de Supabase no cargó.";
-        } else {
-            const status = document.getElementById('status');
-            const supabaseClient = supabase.createClient(
-                'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
-                'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
-            );
-            
-            supabaseClient.from('Autos').select('*').then(({ data, error }) => {
-                if (error) status.innerHTML = "Error BD: " + error.message;
-                else status.innerHTML = "¡Conectado! Autos: " + data.length;
-            });
+        const app = document.getElementById('app');
+        
+        // Inicialización
+        const supabase = supabase.createClient(
+            'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
+            'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
+        );
+
+        async function cargarAutos() {
+            try {
+                const { data, error } = await supabase.from('Autos').select('*');
+                
+                if (error) throw error;
+                
+                if (!data || data.length === 0) {
+                    app.innerHTML = "La tabla está vacía.";
+                    return;
+                }
+
+                app.innerHTML = '';
+                data.forEach(auto => {
+                    app.innerHTML += `
+                        <div class="card">
+                            <h3>${auto.Modelo || 'Sin nombre'}</h3>
+                            <p>Precio: ${auto.Precio || 'N/A'}</p>
+                            <img src="${auto.Foto}" style="width:100%; border-radius:5px;" onerror="this.style.display='none'">
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                app.innerHTML = `<div class="error">Error: ${err.message}</div>`;
+            }
         }
+
+        cargarAutos();
     </script>
 </body>
 </html>
