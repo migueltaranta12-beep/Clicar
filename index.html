@@ -2,60 +2,48 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CliCar | Catálogo de Vehículos</title>
     <style>
-        :root { --azul: #003399; --rojo: #E30613; --verde: #25d366; --blanco: #ffffff; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: #f4f4f4; color: #333; line-height: 1.6; }
-        header { background: var(--azul); color: var(--blanco); padding: 2rem; text-align: center; border-bottom: 5px solid var(--rojo); }
-        .container { max-width: 1000px; margin: 20px auto; padding: 0 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
-        .card { background: var(--blanco); padding: 20px; border-radius: 12px; border-top: 5px solid var(--rojo); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .card h3 { color: var(--azul); margin-bottom: 10px; }
-        .btn-whatsapp { display: block; margin-top: 15px; padding: 12px; background: var(--verde); color: var(--blanco); text-align: center; text-decoration: none; border-radius: 6px; font-weight: bold; }
+        :root { --azul: #003399; --verde: #25d366; --blanco: #ffffff; }
+        body { background: #f4f4f4; font-family: sans-serif; text-align: center; }
+        .card { background: var(--blanco); padding: 20px; border-radius: 12px; margin: 20px; display: inline-block; width: 300px; text-align: left; }
+        .btn-whatsapp { display: block; margin-top: 15px; padding: 12px; background: var(--verde); color: var(--blanco); text-decoration: none; border-radius: 5px; text-align: center; }
     </style>
 </head>
 <body>
+
     <header>
-        <img src="logo.jpg" alt="Logo" style="max-width: 200px; display: block; margin: 0 auto 10px auto;">
         <h1>CliCar</h1>
         <p>Tu próximo vehículo está aquí</p>
-    <script type="module">
-    // Cargar librería de Supabase
-const script = document.createElement('script');
-script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
-script.onload = cargarAutosDesdeSupabase;
-document.head.appendChild(script);
+    </header>
 
-async function cargarAutosDesdeSupabase() {
-    const SUPABASE_URL = 'https://hvdmwzbvnrxhhhqdrck.supabase.co';
-    const SUPABASE_KEY = 'Sb_publishable_yXKvcdmnwzVMTkP8Fz2AMg_9q0A0pKl'; // Tu llave pública
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <div id="listaAutos"></div>
 
-    const { data, error } = await supabase
-        .from('Autos')
-        .select('*');
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://hvdmwzbvnrxhhhqdrck.supabase.co';
+        const SUPABASE_KEY = 'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    if (error) {
-        console.error("Error al cargar:", error);
-        return;
-    }
+        async function cargarAutos() {
+            const { data, error } = await supabase.from('Autos').select('*');
+            if (error) { console.error("Error:", error); return; }
 
-    const contenedor = document.getElementById('listaAutos');
-    contenedor.innerHTML = ''; 
+            const contenedor = document.getElementById('listaAutos');
+            contenedor.innerHTML = '';
 
-    data.forEach(auto => {
+            data.forEach(auto => {
+                contenedor.innerHTML += `
+                    <div class="card">
+                        <img src="${auto.Foto}" style="width:100%; border-radius: 8px;">
+                        <h3>${auto.Modelo}</h3>
                         <p><strong>Precio:</strong> ${auto.Precio} USD</p>
-                <a href="https://wa.me/5493510000000?text=Hola, me interesa el ${auto.Modelo}" class="btn-whatsapp">Contactar</a>
-            </div>
-        `;
-        
-            </div>
-        `;
-    });
+                        <a href="https://wa.me/5493510000000?text=Hola, me interesa el ${auto.Modelo}" class="btn-whatsapp">Contactar</a>
+                    </div>
+                `;
+            });
         }
-        
+        cargarAutos();
     </script>
 </body>
 </html>
