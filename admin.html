@@ -29,9 +29,13 @@
     </script>
 </head>
     <style>
-        :root { --azul: #003399; --rojo: #E30613; --verde: #25d366; --blanco: #ffffff; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: #f4f4f4; color: #333; line-height: 1.6; }
+    <div class="container">
+    <h2>Cargar nuevo vehículo</h2>
+    <input type="text" id="modelo" placeholder="Modelo del auto" style="width:100%; padding: 10px; margin: 10px 0;"><br>
+    <input type="number" id="precio" placeholder="Precio en USD" style="width:100%; padding: 10px; margin: 10px 0;"><br>
+    <button onclick="subirAuto()" style="background-color: var(--verde); color: white; padding: 10px 20px; border: none; cursor: pointer;">Publicar en Catálogo</button>
+</div>
+        
         header { background: var(--azul); color: var(--blanco); padding: 2rem; text-align: center; border-bottom: 5px solid var(--rojo); }
         .container { max-width: 1000px; margin: 20px auto; padding: 0 20px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
