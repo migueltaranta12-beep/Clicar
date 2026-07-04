@@ -24,7 +24,7 @@
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
     import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
-
+        
     const firebaseConfig = {
         apiKey: "AIzaSyC8YBo6ynaldT7iRJ4fPLe_5Bxkj1o9_sc",
         authDomain: "clicar-627e8.firebaseapp.com",
@@ -38,21 +38,21 @@
     const db = getFirestore(app);
     const lista = document.getElementById('listaAutos');
 
-    onSnapshot(collection(db, "autos"), (snapshot) => {
-        lista.innerHTML = ""; 
-        snapshot.forEach((doc) => {
-            const auto = doc.data();
-            lista.innerHTML += `
-                        lista.innerHTML += `
+ onSnapshot(collection(db, "autos"), (snapshot) => {
+    lista.innerHTML = ""; // Limpiar antes de cargar
+    snapshot.forEach((doc) => {
+        const auto = doc.data();
+        lista.innerHTML += `
             <div class="card">
                 <img src="${auto.foto}" style="width:100%; border-radius: 8px;">
                 <h3>${auto.modelo}</h3>
                 <p><strong>Precio:</strong> ${auto.precio} USD</p>
-                <a href="https://wa.me/5493510000000?text=Hola, me interesa el ${auto.modelo}" class="btn-whatsapp">Consultar por WhatsApp</a>
+                <a href="https://wa.me/5493510000000?text=Hola, me interesa el ${auto.modelo}" class="btn-whatsapp">Consultar</a>
             </div>
-            `;
-            
-                    <a href="https://wa.me/5493510000000?text=Hola, me interesa el ${auto.modelo}" class="btn-whatsapp">Consultar</a>
+        `;
+    });
+});
+        
                 </div>`;
         });
     });
