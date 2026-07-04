@@ -2,17 +2,20 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CliCar | Catálogo de Vehículos</title>
     <style>
-        :root { --azul: #003399; --verde: #25d366; --blanco: #ffffff; }
+        :root { --azul: #003399; --rojo: #E30613; --blanco: #ffffff; }
         body { background: #f4f4f4; font-family: sans-serif; text-align: center; }
-        .card { background: var(--blanco); padding: 20px; border-radius: 12px; margin: 20px; display: inline-block; width: 300px; text-align: left; }
-        .btn-whatsapp { display: block; margin-top: 15px; padding: 12px; background: var(--verde); color: var(--blanco); text-decoration: none; border-radius: 5px; text-align: center; }
+        header { background: var(--azul); color: var(--blanco); padding: 20px; }
+        .card { background: var(--blanco); padding: 20px; border-radius: 12px; margin: 20px auto; width: 80%; max-width: 300px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .btn-whatsapp { display: block; margin-top: 15px; padding: 12px; background: var(--rojo); color: var(--blanco); text-decoration: none; border-radius: 5px; }
     </style>
 </head>
 <body>
 
     <header>
+        <img src="logo.jpg" alt="Logo" style="max-width: 200px; display: block; margin: 0 auto;">
         <h1>CliCar</h1>
         <p>Tu próximo vehículo está aquí</p>
     </header>
