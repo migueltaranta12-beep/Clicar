@@ -2,57 +2,35 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CliCar Catálogo</title>
-    <style>
-        body { font-family: sans-serif; padding: 20px; background: #f0f0f0; }
-        .card { background: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        #app { color: #333; }
-        .error { color: red; font-weight: bold; }
-    </style>
+    <title>Debug CliCar</title>
 </head>
 <body>
-
-    <h1>Catálogo CliCar</h1>
-    <div id="app">Cargando datos...</div>
+    <div id="app">Conectando...</div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const app = document.getElementById('app');
-        
-        // Inicialización
         const supabase = supabase.createClient(
             'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
             'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
         );
 
-        async function cargarAutos() {
+        async function verificar() {
+            app.innerHTML = "Consultando tabla 'Autos'...";
             try {
+                // Probamos traer solo 1 fila para ver si responde
                 const { data, error } = await supabase.from('Autos').select('*');
                 
-                if (error) throw error;
-                
-                if (!data || data.length === 0) {
-                    app.innerHTML = "La tabla está vacía.";
-                    return;
+                if (error) {
+                    app.innerHTML = "Error de base de datos: " + error.message;
+                } else if (data) {
+                    app.innerHTML = "¡CONEXIÓN EXITOSA! Datos recibidos: " + JSON.stringify(data);
                 }
-
-                app.innerHTML = '';
-                data.forEach(auto => {
-                    app.innerHTML += `
-                        <div class="card">
-                            <h3>${auto.Modelo || 'Sin nombre'}</h3>
-                            <p>Precio: ${auto.Precio || 'N/A'}</p>
-                            <img src="${auto.Foto}" style="width:100%; border-radius:5px;" onerror="this.style.display='none'">
-                        </div>
-                    `;
-                });
             } catch (err) {
-                app.innerHTML = `<div class="error">Error: ${err.message}</div>`;
+                app.innerHTML = "Error crítico de ejecución: " + err.message;
             }
         }
-
-        cargarAutos();
+        verificar();
     </script>
 </body>
 </html>
