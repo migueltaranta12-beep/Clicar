@@ -21,25 +21,37 @@
         <img src="logo.jpg" alt="Logo" style="max-width: 200px; display: block; margin: 0 auto 10px auto;">
         <h1>CliCar</h1>
         <p>Tu próximo vehículo está aquí</p>
-    </header>
-    <div class="container">
-        <div class="grid" id="listaAutos"></div>
-    </div>
-    <footer style="margin: 40px; text-align: center;">
-        <a href="admin.html" style="color: #666; font-size: 0.8rem;">Acceso exclusivo socios</a>
-    </footer>
-    <script>
-        const lista = document.getElementById('listaAutos');
-        const autos = JSON.parse(localStorage.getItem('autosCliCar')) || [];
-        if(autos.length === 0) {
-            lista.innerHTML = '<p style="text-align:center; width:100%;">No hay vehículos cargados actualmente.</p>';
-        } else {
-            autos.forEach(auto => {
-                lista.innerHTML += `
-                    <div class="card">
-                        <h3>${auto.modelo}</h3>
-                        <p><strong>Precio:</strong> ${auto.precio} USD</p>
-                        <p>${auto.descripcion}</p>
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+    import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyC8YBo6ynaldT7iRJ4fPLe_5Bxkj1o9_sc",
+        authDomain: "clicar-627e8.firebaseapp.com",
+        projectId: "clicar-627e8",
+        storageBucket: "clicar-627e8.appspot.com",
+        messagingSenderId: "1038834599999",
+        appId: "1:1038834599999:web:d1c1db51631"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const lista = document.getElementById('listaAutos');
+
+    onSnapshot(collection(db, "autos"), (snapshot) => {
+        lista.innerHTML = ""; 
+        snapshot.forEach((doc) => {
+            const auto = doc.data();
+            lista.innerHTML += `
+                <div class="card">
+                    <h3>${auto.modelo}</h3>
+                    <p><strong>Precio:</strong> ${auto.precio} USD</p>
+                    <a href="https://wa.me/5493510000000?text=Hola, me interesa el ${auto.modelo}" class="btn-whatsapp">Consultar</a>
+                </div>`;
+        });
+    });
+    </script>
+        
                         <a href="https://wa.me/549XXXXXXX?text=Hola, me interesa el ${auto.modelo}" class="btn-whatsapp">Consultar</a>
                     </div>`;
             });
