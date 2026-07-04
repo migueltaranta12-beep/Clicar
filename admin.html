@@ -1,70 +1,37 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Panel de Carga CliCar</title>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyC8YBo6ynaIdT7iRJ4fPle_5Bxkjl0_sc",
-            authDomain: "clicar-627e8.firebaseapp.com",
-            projectId: "clicar-627e8",
-            storageBucket: "clicar-627e8.appspot.com",
-            messagingSenderId: "1038883459999",
-            appId: "1:1038883459999:web:d1c1db51631"
-        };
+  const db = getFirestore(initializeApp({
+    apiKey: "AIzaSyC8YBo6ynaIdT7iRJ4fPle_5Bxkjl0_sc",
+    authDomain: "clicar-627e8.firebaseapp.com",
+    projectId: "clicar-627e8",
+    storageBucket: "clicar-627e8.appspot.com",
+    messagingSenderId: "1038883459999",
+    appId: "1:1038883459999:web:d1c1db51631"
+  }));
+  const storage = getStorage();
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const storage = getStorage(app);
+  window.subirAuto = async () => {
+    try {
+      const modelo = document.getElementById('modelo').value;
+      const precio = document.getElementById('precio').value;
+      const archivo = document.getElementById('foto').files[0];
+      if (!modelo || !precio || !archivo) return alert("Completa todo");
+      
+      alert("Subiendo...");
+      const storageRef = ref(storage, 'autos/' + Date.now());
+      await uploadBytes(storageRef, archivo);
+      const url = await getDownloadURL(storageRef);
+      await addDoc(collection(db, "autos"), { modelo, precio, foto: url });
+      alert("¡ÉXITO!");
+    } catch (e) { alert("ERROR: " + e.message); }
+  };
+</script>
 
-        window.subirAuto = async () => {
-            try {
-                const modelo = document.getElementById('modelo').value;
-                const precio = document.getElementById('precio').value;
-                const archivo = document.getElementById('foto').files[0];
-
-                if (!modelo || !precio || !archivo) {
-                    alert("¡Por favor completa todos los campos!");
-                    return;
-                }
-
-                alert("Subiendo...");
-                const storageRef = ref(storage, 'autos/' + archivo.name);
-                await uploadBytes(storageRef, archivo);
-                const urlFoto = await getDownloadURL(storageRef);
-
-                await addDoc(collection(db, "autos"), { 
-                    modelo: modelo, 
-                    precio: precio, 
-                    foto: urlFoto, 
-                    fecha: new Date() 
-                });
-                
-                alert("¡ÉXITO TOTAL! Auto publicado.");
-            } catch (error) {
-                alert("ERROR: " + error.message);
-                console.error(error);
-            }
-        };
-    </script>
-    <style>
-        body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
-        input, button { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
-        button { background: #25d366; color: white; border: none; cursor: pointer; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h2>Cargar nuevo vehículo</h2>
-        <input type="text" id="modelo" placeholder="Modelo del auto">
-        <input type="number" id="precio" placeholder="Precio en USD">
-        <input type="file" id="foto" accept="image/*">
-        <button onclick="subirAuto()">Publicar en Catálogo</button>
-    </div>
-</body>
-</html>
+<h2>Carga</h2>
+<input id="modelo" placeholder="Modelo">
+<input id="precio" placeholder="Precio">
+<input type="file" id="foto">
+<button onclick="subirAuto()">Publicar</button>
