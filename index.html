@@ -2,10 +2,26 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>CliCar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CliCar | Catálogo</title>
+    <style>
+        /* Diseño recuperado */
+        body { font-family: sans-serif; text-align: center; background: #f4f4f4; margin: 0; }
+        header { background: #003399; color: white; padding: 20px; }
+        header img { max-width: 150px; margin-bottom: 10px; display: block; margin: 0 auto; }
+        .card { background: white; margin: 20px auto; padding: 15px; width: 80%; max-width: 300px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        img.auto-img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
+    </style>
 </head>
 <body>
-    <h1>CliCar</h1>
+
+    <header>
+        <!-- Asegúrate de tener logo.jpg en tu repo -->
+        <img src="logo.jpg" alt="Logo CliCar">
+        <h1>CliCar</h1>
+        <p>Tu próximo vehículo está aquí</p>
+    </header>
+
     <div id="listaAutos">Cargando autos...</div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -17,26 +33,22 @@
 
         async function cargarAutos() {
             const contenedor = document.getElementById('listaAutos');
-            const { data, error } = await supabase.from('Autos').select('*');
-            
-            if (error) {
-                contenedor.innerHTML = "Error: " + error.message;
-                return;
-            }
+            try {
+                const { data, error } = await supabase.from('Autos').select('*');
+                if (error) throw error;
 
-            contenedor.innerHTML = '';
-            if (data.length === 0) {
-                contenedor.innerHTML = "No hay autos.";
-            } else {
+                contenedor.innerHTML = '';
                 data.forEach(auto => {
                     contenedor.innerHTML += `
-                        <div>
+                        <div class="card">
                             <h3>${auto.Modelo}</h3>
-                            <p>Precio: ${auto.Precio}</p>
-                            <img src="${auto.Foto}" width="200">
+                            <p>Precio: ${auto.Precio} USD</p>
+                            <img src="${auto.Foto}" class="auto-img" onerror="this.style.display='none'">
                         </div>
                     `;
                 });
+            } catch (e) {
+                contenedor.innerHTML = "Error: " + e.message;
             }
         }
         cargarAutos();
