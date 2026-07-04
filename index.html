@@ -3,45 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CliCar | Catálogo de Vehículos</title>
+    <title>CliCar</title>
     <style>
-        :root { --azul: #003399; --rojo: #E30613; --blanco: #ffffff; }
-        body { background: #f4f4f4; font-family: sans-serif; text-align: center; }
-        header { background: var(--azul); color: var(--blanco); padding: 20px; }
-        .card { background: var(--blanco); padding: 20px; border-radius: 12px; margin: 20px auto; width: 80%; max-width: 300px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .btn-whatsapp { display: block; margin-top: 15px; padding: 12px; background: var(--rojo); color: var(--blanco); text-decoration: none; border-radius: 5px; }
+        body { font-family: sans-serif; text-align: center; background: #f4f4f4; }
+        header { background: #003399; color: white; padding: 20px; }
+        .card { background: white; margin: 20px auto; padding: 15px; width: 80%; max-width: 300px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
-
     <header>
-        <img src="logo.jpg" alt="Logo" style="max-width: 200px; display: block; margin: 0 auto;">
+        <img src="logo.jpg" alt="Logo" style="max-width: 150px;">
         <h1>CliCar</h1>
-        <p>Tu próximo vehículo está aquí</p>
     </header>
 
-    <div id="listaAutos"></div>
+    <div id="listaAutos">Cargando...</div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const SUPABASE_URL = 'https://hvdmwzbvnrxhhhqdrck.supabase.co';
-        const SUPABASE_KEY = 'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabase = supabase.createClient('https://hvdmwzbvnrxhhhqdrck.supabase.co', 'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1');
 
         async function cargarAutos() {
+            // Se conecta a la tabla 'Autos'
             const { data, error } = await supabase.from('Autos').select('*');
-            if (error) { console.error("Error:", error); return; }
+            
+            if (error) {
+                document.getElementById('listaAutos').innerHTML = "Error: " + error.message;
+                return;
+            }
 
             const contenedor = document.getElementById('listaAutos');
             contenedor.innerHTML = '';
-
+            
             data.forEach(auto => {
+                // AQUÍ ESTÁ EL CAMBIO: usamos 'auto.Foto' con MAYÚSCULA
                 contenedor.innerHTML += `
                     <div class="card">
-                        <img src="${auto.Foto}" style="width:100%; border-radius: 8px;">
                         <h3>${auto.Modelo}</h3>
-                        <p><strong>Precio:</strong> ${auto.Precio} USD</p>
-                        <a href="https://wa.me/5493510000000?text=Hola, me interesa el ${auto.Modelo}" class="btn-whatsapp">Contactar</a>
+                        <p>Precio: ${auto.Precio} USD</p>
+                        <img src="${auto.Foto}" style="width:100%;" onerror="this.style.display='none'">
                     </div>
                 `;
             });
