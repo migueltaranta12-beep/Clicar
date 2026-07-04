@@ -2,39 +2,36 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Diagnóstico CliCar</title>
+    <title>CliCar</title>
 </head>
 <body>
-    <div id="status" style="padding: 20px; font-family: sans-serif;">Iniciando conexión...</div>
+    <div id="app">Cargando aplicación...</div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const statusDiv = document.getElementById('status');
-        const supabase = supabase.createClient(
-            'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
-            'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
-        );
+        const app = document.getElementById('app');
+        
+        try {
+            const supabase = supabase.createClient(
+                'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
+                'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
+            );
+            
+            app.innerHTML = "Conectando a base de datos...";
 
-        async function diagnostico() {
-            try {
+            async function cargar() {
                 const { data, error } = await supabase.from('Autos').select('*');
-                
                 if (error) {
-                    statusDiv.innerHTML = "❌ ERROR DE SUPABASE: " + JSON.stringify(error);
-                    return;
-                }
-                
-                if (!data || data.length === 0) {
-                    statusDiv.innerHTML = "✅ Conectado, pero la tabla está vacía.";
+                    app.innerHTML = "Error: " + error.message;
                 } else {
-                    statusDiv.innerHTML = "✅ ¡Conexión exitosa! Autos encontrados: " + data.length;
+                    app.innerHTML = "Éxito. Se encontraron " + data.length + " autos.";
                     console.log(data);
                 }
-            } catch (e) {
-                statusDiv.innerHTML = "❌ ERROR DE CÓDIGO: " + e.message;
             }
+            cargar();
+        } catch (e) {
+            app.innerHTML = "Error fatal: " + e.message;
         }
-        diagnostico();
     </script>
 </body>
 </html>
