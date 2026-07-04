@@ -25,12 +25,30 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstati
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        window.subirAuto = async () => {
-            const modelo = document.getElementById('modelo').value;
-            const precio = document.getElementById('precio').value;
-            await addDoc(collection(db, "autos"), { modelo, precio, fecha: new Date() });
-            alert("¡Auto publicado con éxito!");
-        };
+    window.subirAuto = async () => {
+    const modelo = document.getElementById('modelo').value;
+    const precio = document.getElementById('precio').value;
+    const archivo = document.getElementById('foto').files[0];
+
+    if (!archivo) { alert("Por favor selecciona una foto"); return; }
+
+    // 1. Subir a Storage
+    const storageRef = ref(storage, 'autos/' + archivo.name);
+    await uploadBytes(storageRef, archivo);
+    
+    // 2. Obtener el link de la foto
+    const urlFoto = await getDownloadURL(storageRef);
+
+    // 3. Guardar todo en Firestore
+    await addDoc(collection(db, "autos"), { 
+        modelo: modelo, 
+        precio: precio, 
+        foto: urlFoto, 
+        fecha: new Date() 
+    });
+    alert("¡Auto publicado con éxito!");
+};
+        
     </script>
 </head>
 <style>
@@ -45,6 +63,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstati
         <h2>Cargar nuevo vehículo</h2>
         <input type="text" id="modelo" placeholder="Modelo del auto">
         <input type="number" id="precio" placeholder="Precio en USD">
+        <input type="file" id="foto" accept="image/*">
         <button onclick="subirAuto()">Publicar en Catálogo</button>
     </div>
 </body>
