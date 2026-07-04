@@ -2,37 +2,39 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Test CliCar</title>
+    <title>CliCar</title>
 </head>
 <body>
-    <div id="status" style="padding: 20px; font-family: sans-serif;">Iniciando...</div>
+    <div id="status">Cargando...</div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <script>
-        const statusDiv = document.getElementById('status');
-        
-        async function probarConexion() {
+        // 2. Esperamos a que la página cargue totalmente
+        window.addEventListener('load', () => {
+            const statusDiv = document.getElementById('status');
+            
             try {
-                statusDiv.innerHTML = "Creando cliente...";
-                const supabase = supabase.createClient(
+                // 3. Inicializamos solo cuando sabemos que supabase ya existe
+                const supabase = window.supabase.createClient(
                     'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
                     'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
                 );
-
-                statusDiv.innerHTML = "Consultando tabla 'Autos'...";
-                const { data, error } = await supabase.from('Autos').select('*');
                 
-                if (error) {
-                    statusDiv.innerHTML = "<b style='color:red'>ERROR:</b> " + error.message;
-                } else {
-                    statusDiv.innerHTML = "<b style='color:green'>¡ÉXITO!</b> Autos encontrados: " + data.length;
-                    console.log(data);
-                }
+                statusDiv.innerHTML = "Conectado. Consultando base de datos...";
+
+                supabase.from('Autos').select('*').then(({ data, error }) => {
+                    if (error) {
+                        statusDiv.innerHTML = "Error BD: " + error.message;
+                    } else {
+                        statusDiv.innerHTML = "¡ÉXITO! Autos encontrados: " + data.length;
+                        console.log(data);
+                    }
+                });
             } catch (e) {
-                statusDiv.innerHTML = "<b style='color:red'>EXCEPCIÓN:</b> " + e.message;
+                statusDiv.innerHTML = "Error crítico: " + e.message;
             }
-        }
-        probarConexion();
+        });
     </script>
 </body>
 </html>
