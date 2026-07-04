@@ -22,40 +22,40 @@
         <h1>CliCar</h1>
         <p>Tu próximo vehículo está aquí</p>
     <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-    import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+    // Cargar librería de Supabase
+const script = document.createElement('script');
+script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+script.onload = cargarAutosDesdeSupabase;
+document.head.appendChild(script);
+
+async function cargarAutosDesdeSupabase() {
+    const SUPABASE_URL = 'https://hvdmwzbvnrxhhhqdrck.supabase.co';
+    const SUPABASE_KEY = 'Sb_publishable_yXKvcdmnwzVMTkP8Fz2AMg_9q0A0pKl'; // Tu llave pública
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const { data, error } = await supabase
+        .from('Autos')
+        .select('*');
+
+    if (error) {
+        console.error("Error al cargar:", error);
+        return;
+    }
+
+    const contenedor = document.getElementById('listaAutos');
+    contenedor.innerHTML = ''; 
+
+    data.forEach(auto => {
+                        <p><strong>Precio:</strong> ${auto.Precio} USD</p>
+                <a href="https://wa.me/5493510000000?text=Hola, me interesa el ${auto.Modelo}" class="btn-whatsapp">Contactar</a>
+            </div>
+        `;
         
-    const firebaseConfig = {
-        apiKey: "AIzaSyC8YBo6ynaldT7iRJ4fPLe_5Bxkj1o9_sc",
-        authDomain: "clicar-627e8.firebaseapp.com",
-        projectId: "clicar-627e8",
-        storageBucket: "clicar-627e8.appspot.com",
-        messagingSenderId: "1038834599999",
-        appId: "1:1038834599999:web:d1c1db51631"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const lista = document.getElementById('listaAutos');
-
- onSnapshot(collection(db, "autos"), (snapshot) => {
-    lista.innerHTML = ""; // Limpiar antes de cargar
-    snapshot.forEach((doc) => {
-        const auto = doc.data();
-        lista.innerHTML += `
-            <div class="card">
-                <img src="${auto.foto}" style="width:100%; border-radius: 8px;">
-                <h3>${auto.modelo}</h3>
-                <p><strong>Precio:</strong> ${auto.precio} USD</p>
-                <a href="https://wa.me/5493510000000?text=Hola, me interesa el ${auto.modelo}" class="btn-whatsapp">Consultar</a>
             </div>
         `;
     });
-});
+        }
         
-                </div>`;
-        });
-    });
     </script>
 </body>
 </html>
