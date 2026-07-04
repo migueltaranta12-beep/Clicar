@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    
     <meta charset="UTF-8">
     <title>Panel de Carga CliCar</title>
     <script type="module">
@@ -28,9 +29,23 @@
         };
     </script>
 </head>
-    <style>
+<style>
+    /* Estilos globales */
+    body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
+    .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+    button { width: 100%; padding: 12px; background: #25d366; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+</style>
+<body>
     <div class="container">
-    <h2>Cargar nuevo vehículo</h2>
+        <h2>Cargar nuevo vehículo</h2>
+        <input type="text" id="modelo" placeholder="Modelo del auto">
+        <input type="number" id="precio" placeholder="Precio en USD">
+        <button onclick="subirAuto()">Publicar en Catálogo</button>
+    </div>
+</body>
+</html>
+
     <input type="text" id="modelo" placeholder="Modelo del auto" style="width:100%; padding: 10px; margin: 10px 0;"><br>
     <input type="number" id="precio" placeholder="Precio en USD" style="width:100%; padding: 10px; margin: 10px 0;"><br>
     <button onclick="subirAuto()" style="background-color: var(--verde); color: white; padding: 10px 20px; border: none; cursor: pointer;">Publicar en Catálogo</button>
