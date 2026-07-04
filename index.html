@@ -43,9 +43,15 @@
         snapshot.forEach((doc) => {
             const auto = doc.data();
             lista.innerHTML += `
-                <div class="card">
-                    <h3>${auto.modelo}</h3>
-                    <p><strong>Precio:</strong> ${auto.precio} USD</p>
+                        lista.innerHTML += `
+            <div class="card">
+                <img src="${auto.foto}" style="width:100%; border-radius: 8px;">
+                <h3>${auto.modelo}</h3>
+                <p><strong>Precio:</strong> ${auto.precio} USD</p>
+                <a href="https://wa.me/5493510000000?text=Hola, me interesa el ${auto.modelo}" class="btn-whatsapp">Consultar por WhatsApp</a>
+            </div>
+            `;
+            
                     <a href="https://wa.me/5493510000000?text=Hola, me interesa el ${auto.modelo}" class="btn-whatsapp">Consultar</a>
                 </div>`;
         });
