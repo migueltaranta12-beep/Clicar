@@ -3,30 +3,37 @@
   import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
   import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
 
-  const db = getFirestore(initializeApp({
+  const app = initializeApp({
     apiKey: "AIzaSyC8YBo6ynaIdT7iRJ4fPle_5Bxkjl0_sc",
     authDomain: "clicar-627e8.firebaseapp.com",
     projectId: "clicar-627e8",
     storageBucket: "clicar-627e8.appspot.com",
     messagingSenderId: "1038883459999",
     appId: "1:1038883459999:web:d1c1db51631"
-  }));
-  const storage = getStorage();
+  });
+  
+  const db = getFirestore(app);
+  const storage = getStorage(app);
 
   window.subirAuto = async () => {
+    const modelo = document.getElementById('modelo').value;
+    const precio = document.getElementById('precio').value;
+    const archivo = document.getElementById('foto').files[0];
+    
+    if (!modelo || !archivo) return alert("Completa modelo y foto");
+    
     try {
-      const modelo = document.getElementById('modelo').value;
-      const precio = document.getElementById('precio').value;
-      const archivo = document.getElementById('foto').files[0];
-      if (!modelo || !precio || !archivo) return alert("Completa todo");
-      
-      alert("Subiendo...");
+      console.log("Iniciando subida...");
       const storageRef = ref(storage, 'autos/' + Date.now());
-      await uploadBytes(storageRef, archivo);
-      const url = await getDownloadURL(storageRef);
+      const snapshot = await uploadBytes(storageRef, archivo);
+      console.log("Foto subida, obteniendo URL...");
+      const url = await getDownloadURL(snapshot.ref);
       await addDoc(collection(db, "autos"), { modelo, precio, foto: url });
-      alert("¡ÉXITO!");
-    } catch (e) { alert("ERROR: " + e.message); }
+      alert("¡ÉXITO TOTAL!");
+    } catch (e) { 
+      console.error("ERROR DETALLADO:", e);
+      alert("ERROR: " + e.message); 
+    }
   };
 </script>
 
