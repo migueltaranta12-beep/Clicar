@@ -2,25 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CliCar | Catálogo de Vehículos</title>
-    <style>
-        body { font-family: sans-serif; text-align: center; background: #f4f4f4; margin: 0; }
-        header { background: #003399; color: white; padding: 20px; }
-        header img { max-width: 150px; margin-bottom: 10px; display: block; margin-left: auto; margin-right: auto; }
-        .card { background: white; margin: 20px auto; padding: 15px; width: 80%; max-width: 300px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        img.auto-img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
-    </style>
+    <title>CliCar | Catálogo</title>
 </head>
 <body>
-
-    <header>
-        <img src="logo.jpg" alt="Logo CliCar">
-        <h1>CliCar</h1>
-        <p>Tu próximo vehículo está aquí</p>
-    </header>
-
-    <div id="listaAutos">Cargando autos...</div>
+    <h1>CliCar</h1>
+    <div id="listaAutos">Iniciando conexión...</div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -29,34 +15,28 @@
             'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
         );
 
-        async function cargarAutos() {
+        async function probarConexion() {
             const contenedor = document.getElementById('listaAutos');
-            
             try {
+                // Hacemos una consulta simple
                 const { data, error } = await supabase.from('Autos').select('*');
                 
-                if (error) throw error;
-
-                contenedor.innerHTML = '';
-                
-                if (data && data.length > 0) {
-                    data.forEach(auto => {
-                        contenedor.innerHTML += `
-                            <div class="card">
-                                <h3>${auto.Modelo}</h3>
-                                <p>Precio: ${auto.Precio} USD</p>
-                                <img src="${auto.Foto}" class="auto-img" alt="${auto.Modelo}" onerror="this.style.display='none'">
-                            </div>
-                        `;
-                    });
-                } else {
-                    contenedor.innerHTML = "No hay autos para mostrar.";
+                if (error) {
+                    contenedor.innerHTML = "ERROR DE SUPABASE: " + error.message;
+                    return;
                 }
-            } catch (e) {
-                contenedor.innerHTML = "Error al conectar: " + e.message;
+                
+                if (data.length === 0) {
+                    contenedor.innerHTML = "La tabla está vacía.";
+                    return;
+                }
+
+                contenedor.innerHTML = "¡Conectado! Autos encontrados: " + data.length;
+            } catch (err) {
+                contenedor.innerHTML = "ERROR CRÍTICO: " + err.message;
             }
         }
-        cargarAutos();
+        probarConexion();
     </script>
 </body>
 </html>
