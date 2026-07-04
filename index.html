@@ -2,50 +2,36 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>CliCar</title>
+    <title>Test Final</title>
 </head>
 <body>
-    <div id="status">Cargando motor de conexión...</div>
+    <div id="status">Iniciando...</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     
     <script>
         const statusDiv = document.getElementById('status');
-
-        // Función que verifica si supabase cargó
-        function verificarSupabase() {
-            if (typeof supabase !== 'undefined' && supabase.createClient) {
-                iniciarApp();
+        
+        // Verificamos si la librería existe tras 2 segundos
+        setTimeout(() => {
+            if (typeof supabase === 'undefined') {
+                statusDiv.innerHTML = "❌ ERROR: No se pudo descargar la librería Supabase. ¿Tienes bloqueador de anuncios o restricción de red?";
             } else {
-                statusDiv.innerHTML = "Esperando descarga de Supabase...";
-                setTimeout(verificarSupabase, 500); // Reintenta cada medio segundo
-            }
-        }
-
-        async function iniciarApp() {
-            try {
-                statusDiv.innerHTML = "Conectado. Consultando base de datos...";
-                
-                const client = supabase.createClient(
-                    'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
-                    'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
-                );
-
-                const { data, error } = await client.from('Autos').select('*');
-                
-                if (error) {
-                    statusDiv.innerHTML = "Error BD: " + error.message;
-                } else {
-                    statusDiv.innerHTML = "¡ÉXITO! Autos encontrados: " + (data ? data.length : 0);
-                    console.log(data);
+                statusDiv.innerHTML = "✅ Librería cargada. Intentando conectar...";
+                try {
+                    const client = supabase.createClient(
+                        'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
+                        'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
+                    );
+                    client.from('Autos').select('*').then(({data, error}) => {
+                        if(error) statusDiv.innerHTML = "❌ Error BD: " + error.message;
+                        else statusDiv.innerHTML = "✅ ÉXITO! Autos: " + data.length;
+                    });
+                } catch(e) {
+                    statusDiv.innerHTML = "❌ Error init: " + e.message;
                 }
-            } catch (e) {
-                statusDiv.innerHTML = "Error crítico: " + e.message;
             }
-        }
-
-        // Arrancamos la verificación
-        verificarSupabase();
+        }, 2000);
     </script>
 </body>
 </html>
