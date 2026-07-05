@@ -5,43 +5,36 @@
     <input type="text" id="modelo" placeholder="Modelo">
     <input type="number" id="precio" placeholder="Precio">
     <input type="text" id="foto" placeholder="Link de foto">
-    <button id="btnPublicar" onclick="debugSubir()">Publicar Auto</button>
+    <button id="btnPublicar">Publicar Auto</button>
     <p id="status"></p>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        function debugSubir() {
+        // 1. Aquí abajo, entre las comillas, pegá tu clave 'anon' que copiaste de Supabase
+        const SUPABASE_KEY = 'PEGÁ_ACÁ_TU_CLAVE_LARGA_QUE_EMPIEZA_CON_EYJ';
+        const SUPABASE_URL = 'https://hvdmwzbvnrxhhhqdrck.supabase.co';
+
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        document.getElementById('btnPublicar').addEventListener('click', async () => {
             const status = document.getElementById('status');
-            status.innerText = "1. Botón presionado...";
+            status.innerText = "Subiendo...";
             
             try {
-                if (typeof supabase === 'undefined') {
-                    throw new Error("La librería de Supabase no cargó.");
-                }
-
-                status.innerText = "2. Conectando a Supabase...";
-                const client = supabase.createClient(
-                    'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
-                sb_publishable_yXKvcdmnwzVMTkP8Fz2AMg_9q0A0pKl
-                );
-
                 const modelo = document.getElementById('modelo').value;
                 const precio = document.getElementById('precio').value;
                 const foto = document.getElementById('foto').value;
 
-                status.innerText = "3. Enviando datos...";
-                client.from('Autos').insert([{ Modelo: modelo, Precio: precio, Foto: foto }])
-                    .then(({ error }) => {
-                        if (error) {
-                            status.innerText = "Error: " + error.message;
-                        } else {
-                            status.innerText = "¡ÉXITO! Auto publicado.";
-                        }
-                    });
+                const { error } = await supabase.from('Autos').insert([
+                    { Modelo: modelo, Precio: precio, Foto: foto }
+                ]);
+
+                if (error) throw error;
+                status.innerText = "¡ÉXITO! Auto publicado.";
             } catch (e) {
-                status.innerText = "ERROR FATAL: " + e.message;
+                status.innerText = "Error: " + e.message;
             }
-        }
+        });
     </script>
 </body>
 </html>
