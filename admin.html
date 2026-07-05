@@ -2,41 +2,130 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>TEST SUPABASE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin CliCar</title>
+
+<style>
+body{
+font-family:Arial;
+background:#f2f2f2;
+display:flex;
+justify-content:center;
+padding:20px;
+}
+
+.panel{
+background:white;
+padding:20px;
+border-radius:10px;
+width:100%;
+max-width:400px;
+}
+
+input,button{
+width:100%;
+padding:10px;
+margin:8px 0;
+}
+
+button{
+background:#003399;
+color:white;
+border:none;
+}
+
+#status{
+font-weight:bold;
+white-space:pre-line;
+}
+</style>
 </head>
 
 <body>
 
-<h2>TEST SUPABASE</h2>
+<div class="panel">
 
-<button onclick="probar()">Probar Supabase</button>
+<h2>Admin CliCar</h2>
+
+<input id="modelo" placeholder="Modelo">
+<input id="precio" placeholder="Precio">
+<input type="file" id="foto">
+
+<button id="btn">Publicar</button>
 
 <p id="status">Listo</p>
 
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 
-function probar(){
+const supabase = window.supabase.createClient(
+'https://hvdmwzbvnrxhhhqdrck.supabase.co',
+'sb_publishable_yXKvcdmnwzVMTkP8Fz2AMg_9q0A0pKl'
+);
+
+document.getElementById("btn").addEventListener("click", async () => {
 
 const status = document.getElementById("status");
 
 try{
 
-if(!window.supabase){
-status.innerText = "❌ SUPABASE NO CARGA";
+status.innerText = "INICIANDO...";
+
+const modelo = document.getElementById("modelo").value;
+const precio = document.getElementById("precio").value;
+const foto = document.getElementById("foto").files[0];
+
+if(!modelo || !precio || !foto){
+status.innerText = "FALTAN DATOS";
 return;
 }
 
-status.innerText = "✔ SUPABASE OK";
+const fileName = Date.now() + "_" + foto.name;
 
-}catch(e){
-status.innerText = "❌ ERROR: " + e.message;
+status.innerText = "SUBIENDO...";
+
+const { error: uploadError } = await supabase
+.storage
+.from("autos")
+.upload(fileName, foto);
+
+if(uploadError){
+status.innerText = "ERROR STORAGE:\n" + uploadError.message;
+return;
 }
 
+const { data } = supabase
+.storage
+.from("autos")
+.getPublicUrl(fileName);
+
+status.innerText = "GUARDANDO...";
+
+const { error: dbError } = await supabase
+.from("Autos")
+.insert([{
+Modelo: modelo,
+Precio: precio,
+Foto: data.publicUrl
+}]);
+
+if(dbError){
+status.innerText = "ERROR DB:\n" + dbError.message;
+return;
 }
+
+status.innerText = "PUBLICADO ✔";
+
+}catch(err){
+status.innerText = "ERROR GENERAL:\n" + err.message;
+}
+
+});
 
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 </body>
 </html>
