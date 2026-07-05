@@ -1,68 +1,48 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Panel de Carga CliCar</title>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AlzaSyC8YBobymaldT7sHJ4fPLe_58skj10_sc",
-            authDomain: "clicar-627e8.firebaseapp.com",
-            projectId: "clicar-627e8",
-            storageBucket: "clicar-627e8.appspot.com",
-            messagingSenderId: "1038883459899",
-            appId: "1:1038883459899:web:7d66bf259d575dcc93508a"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        window.subirAuto = async () => {
-            const modelo = document.getElementById('modelo').value;
-            const precio = document.getElementById('precio').value;
-            const linkImagen = document.getElementById('linkImagen').value;
-
-            if (!modelo || !precio || !linkImagen) {
-                alert("Completa todos los campos y pega el link de la imagen.");
-                return;
-            }
-
-            alert("Publicando...");
-            try {
-                await addDoc(collection(db, "autos"), {
-                    modelo: modelo,
-                    precio: precio,
-                    foto: linkImagen,
-                    fecha: new Date()
-                });
-                alert("¡ÉXITO TOTAL! Auto publicado.");
-                document.getElementById('modelo').value = '';
-                document.getElementById('precio').value = '';
-                document.getElementById('linkImagen').value = '';
-            } catch (e) {
-                alert("Error: " + e.message);
-            }
-        };
-    </script>
+    <title>Admin | CliCar</title>
     <style>
-        body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
-        input, button { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
-        button { background: #25d366; color: white; border: none; cursor: pointer; }
+        body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 20px; }
+        .panel { background: white; padding: 20px; border-radius: 8px; max-width: 400px; margin: auto; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        input { width: 100%; margin-bottom: 10px; padding: 8px; box-sizing: border-box; }
+        button { background: #003399; color: white; border: none; padding: 10px; width: 100%; cursor: pointer; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Cargar nuevo vehículo</h2>
+    <div class="panel">
+        <h2>Cargar nuevo auto</h2>
         <input type="text" id="modelo" placeholder="Modelo del auto">
-        <input type="number" id="precio" placeholder="Precio en USD">
-        <input type="text" id="linkImagen" placeholder="Pega aquí el Link directo de ImgBB">
-        <button onclick="subirAuto()">Publicar en Catálogo</button>
+        <input type="number" id="precio" placeholder="Precio">
+        <input type="text" id="foto" placeholder="Link de la foto">
+        <button onclick="guardarAuto()">Guardar en CliCar</button>
+        <p id="status"></p>
     </div>
-</body>
-</html>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabase = supabase.createClient(
+            'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
+            'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
+        );
+
+        async function guardarAuto() {
+            const modelo = document.getElementById('modelo').value;
+            const precio = document.getElementById('precio').value;
+            const foto = document.getElementById('foto').value;
+            const status = document.getElementById('status');
+
+            const { data, error } = await supabase
+                .from('Autos')
+                .insert([{ Modelo: modelo, Precio: precio, Foto: foto }]);
+
+            if (error) {
+                status.innerHTML = "Error: " + error.message;
+            } else {
+                status.innerHTML = "¡Auto guardado correctamente!";
+            }
+        }
+    </script>
+</body>
 </html>
