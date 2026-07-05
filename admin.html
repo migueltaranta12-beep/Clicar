@@ -1,63 +1,35 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Admin | CliCar</title>
-    <style>
-        body { font-family: sans-serif; background-color: #f4f4f4; padding: 20px; text-align: center; }
-        .panel { max-width: 400px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h2 { color: #003399; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 15px; background-color: #28a745; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; }
-        #status { margin-top: 15px; font-weight: bold; }
-    </style>
-</head>
+<html>
 <body>
-    <div class="panel">
-        <h2>Cargar Vehículo</h2>
-        <input type="text" id="modelo" placeholder="Modelo (Ej: Toyota Corolla)">
-        <input type="number" id="precio" placeholder="Precio (Solo números)">
-        <input type="text" id="foto" placeholder="Link de la imagen">
-        <button class="btn" onclick="subirAuto()">Publicar Auto</button>
-        <p id="status"></p>
-    </div>
+    <h2>Panel Admin</h2>
+    <input type="text" id="modelo" placeholder="Modelo">
+    <input type="number" id="precio" placeholder="Precio">
+    <input type="text" id="foto" placeholder="Link de foto">
+    <button id="btnPublicar">Publicar Auto</button>
+    <p id="status"></p>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const supabase = supabase.createClient(
-            'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
-            'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
-        );
+        document.getElementById('btnPublicar').addEventListener('click', async () => {
+            document.getElementById('status').innerText = "Iniciando...";
+            try {
+                const supabase = supabase.createClient(
+                    'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
+                    'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
+                );
+                
+                const { data, error } = await supabase.from('Autos').insert([{ 
+                    Modelo: document.getElementById('modelo').value, 
+                    Precio: document.getElementById('precio').value, 
+                    Foto: document.getElementById('foto').value 
+                }]);
 
-        async function subirAuto() {
-            const status = document.getElementById('status');
-            const modelo = document.getElementById('modelo').value;
-            const precio = document.getElementById('precio').value;
-            const foto = document.getElementById('foto').value;
-
-            if(!modelo || !precio || !foto) {
-                status.innerText = "Por favor, completa todos los campos.";
-                return;
+                if (error) throw error;
+                document.getElementById('status').innerText = "¡Publicado!";
+            } catch (e) {
+                document.getElementById('status').innerText = "Error: " + e.message;
             }
-
-            status.innerText = "Subiendo...";
-            
-            const { error } = await supabase.from('Autos').insert([{ 
-                Modelo: modelo, 
-                Precio: precio, 
-                Foto: foto 
-            }]);
-
-            if (error) {
-                status.innerText = "Error: " + error.message;
-            } else {
-                status.innerText = "¡Auto publicado con éxito!";
-                document.getElementById('modelo').value = '';
-                document.getElementById('precio').value = '';
-                document.getElementById('foto').value = '';
-            }
-        }
+        });
     </script>
 </body>
 </html>
