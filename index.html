@@ -2,12 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CliCar</title>
     <style>
         body { font-family: sans-serif; text-align: center; background: #f4f4f4; }
         header { background: #003399; color: white; padding: 20px; }
-        .card { background: white; margin: 20px auto; padding: 15px; width: 80%; max-width: 300px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .card { background: white; margin: 20px auto; padding: 15px; border-radius: 8px; max-width: 300px; }
     </style>
 </head>
 <body>
@@ -20,29 +19,23 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const supabase = supabase.createClient('https://hvdmwzbvnrxhhhqdrck.supabase.co', 'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1');
+        const supabase = supabase.createClient(
+            'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
+            'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
+        );
 
         async function cargarAutos() {
-            // Se conecta a la tabla 'Autos'
+            const contenedor = document.getElementById('listaAutos');
             const { data, error } = await supabase.from('Autos').select('*');
             
             if (error) {
-                document.getElementById('listaAutos').innerHTML = "Error: " + error.message;
+                contenedor.innerHTML = "Error al cargar: " + error.message;
                 return;
             }
 
-            const contenedor = document.getElementById('listaAutos');
             contenedor.innerHTML = '';
-            
             data.forEach(auto => {
-                // AQUÍ ESTÁ EL CAMBIO: usamos 'auto.Foto' con MAYÚSCULA
-                contenedor.innerHTML += `
-                    <div class="card">
-                        <h3>${auto.Modelo}</h3>
-                        <p>Precio: ${auto.Precio} USD</p>
-                        <img src="${auto.Foto}" style="width:100%;" onerror="this.style.display='none'">
-                    </div>
-                `;
+                contenedor.innerHTML += `<div class="card"><h3>${auto.Modelo}</h3><p>$${auto.Precio}</p></div>`;
             });
         }
         cargarAutos();
