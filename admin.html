@@ -2,21 +2,33 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Admin | CliCar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrativo | CliCar</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 20px; }
-        .panel { background: white; padding: 20px; border-radius: 8px; max-width: 400px; margin: auto; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        input { width: 100%; margin-bottom: 10px; padding: 8px; box-sizing: border-box; }
-        button { background: #003399; color: white; border: none; padding: 10px; width: 100%; cursor: pointer; }
+        body { font-family: Arial, sans-serif; background-color: #f0f0f0; padding: 20px; }
+        .panel { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 10px; 
+            max-width: 400px; 
+            margin: auto; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-top: 5px solid #003399;
+        }
+        h2 { color: #003399; }
+        input { width: 100%; margin-bottom: 15px; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; }
+        button { background: #003399; color: white; border: none; padding: 12px; width: 100%; cursor: pointer; border-radius: 5px; font-weight: bold; }
+        button:hover { background: #cc0000; }
+        #status { margin-top: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="panel">
-        <h2>Cargar nuevo auto</h2>
+        <h2>Cargar vehículo</h2>
         <input type="text" id="modelo" placeholder="Modelo del auto">
         <input type="number" id="precio" placeholder="Precio">
-        <input type="text" id="foto" placeholder="Link de la foto">
-        <button onclick="guardarAuto()">Guardar en CliCar</button>
+        <input type="text" id="foto" placeholder="Link de la imagen">
+        <button onclick="guardarAuto()">Guardar en Base de Datos</button>
         <p id="status"></p>
     </div>
 
@@ -28,10 +40,12 @@
         );
 
         async function guardarAuto() {
+            const status = document.getElementById('status');
             const modelo = document.getElementById('modelo').value;
             const precio = document.getElementById('precio').value;
             const foto = document.getElementById('foto').value;
-            const status = document.getElementById('status');
+
+            status.innerHTML = "Guardando...";
 
             const { data, error } = await supabase
                 .from('Autos')
@@ -40,7 +54,10 @@
             if (error) {
                 status.innerHTML = "Error: " + error.message;
             } else {
-                status.innerHTML = "¡Auto guardado correctamente!";
+                status.innerHTML = "¡Cargado con éxito!";
+                document.getElementById('modelo').value = '';
+                document.getElementById('precio').value = '';
+                document.getElementById('foto').value = '';
             }
         }
     </script>
