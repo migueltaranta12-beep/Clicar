@@ -32,15 +32,13 @@ button{
     background:#003399;
     color:white;
     border:none;
+    font-size:16px;
 }
 
 #status{
-    text-align:center;
-    margin-top:10px;
     font-weight:bold;
 }
 </style>
-
 </head>
 
 <body>
@@ -49,11 +47,11 @@ button{
 
 <h2>Admin CliCar</h2>
 
-<input type="text" id="modelo" placeholder="Modelo">
-<input type="number" id="precio" placeholder="Precio">
-<input type="file" id="foto">
+<input id="modelo" placeholder="Modelo">
+<input id="precio" placeholder="Precio">
+<input id="foto" type="file">
 
-<button onclick="subirAuto()">Publicar</button>
+<button id="btn">Publicar</button>
 
 <p id="status">Listo</p>
 
@@ -63,87 +61,71 @@ button{
 
 <script>
 
-console.log("ADMIN CARGADO ✔");
+console.log("ADMIN OK");
 
 const supabase = window.supabase.createClient(
 'https://hvdmwzbvnrxhhhqdrck.supabase.co',
 'sb_publishable_yXKvcdmnwzVMTkP8Fz2AMg_9q0A0pKl'
 );
 
-async function subirAuto(){
+// 👇 FORZAMOS EL CLICK (NO FALLA NUNCA)
+document.getElementById("btn").addEventListener("click", async () => {
 
-console.log("CLICK EN PUBLICAR ✔");
+console.log("CLICK DETECTADO");
+
+document.getElementById("status").innerText = "Procesando...";
 
 const modelo = document.getElementById("modelo").value;
 const precio = document.getElementById("precio").value;
 const foto = document.getElementById("foto").files[0];
 
-const status = document.getElementById("status");
-
 if(!modelo || !precio || !foto){
-status.innerText = "FALTAN DATOS ❌";
+document.getElementById("status").innerText = "Faltan datos";
 return;
 }
 
-status.innerText = "SUBIENDO...";
-
-try {
-
-// 1 subir imagen
 const fileName = Date.now() + "_" + foto.name;
 
-console.log("SUBIENDO IMAGEN...");
-
-const { data, error: uploadError } = await supabase
+// subir imagen
+const { error: uploadError } = await supabase
 .storage
 .from("autos")
 .upload(fileName, foto);
 
 if(uploadError){
-console.log("ERROR STORAGE:", uploadError);
-status.innerText = "ERROR STORAGE";
+console.log(uploadError);
+document.getElementById("status").innerText = "Error storage";
 return;
 }
 
-console.log("IMAGEN SUBIDA ✔");
-
-// 2 url
-const { data: urlData } = supabase
+// url
+const { data } = supabase
 .storage
 .from("autos")
 .getPublicUrl(fileName);
 
-const imageUrl = urlData.publicUrl;
-
-console.log("URL:", imageUrl);
-
-// 3 guardar
+// guardar
 const { error } = await supabase
 .from("Autos")
 .insert([{
 Modelo: modelo,
 Precio: precio,
-Foto: imageUrl
+Foto: data.publicUrl
 }]);
 
 if(error){
-console.log("ERROR DB:", error);
-status.innerText = "ERROR DB";
+console.log(error);
+document.getElementById("status").innerText = "Error DB";
 return;
 }
 
-status.innerText = "PUBLICADO ✔";
+document.getElementById("status").innerText = "Publicado ✔";
 
-console.log("TODO OK ✔");
+document.getElementById("modelo").value = "";
+document.getElementById("precio").value = "";
+document.getElementById("foto").value = "";
 
-} catch (err) {
-
-console.log("ERROR GENERAL:", err);
-status.innerText = "ERROR GENERAL";
-
-}
-
-}
+});
 
 </script>
 
