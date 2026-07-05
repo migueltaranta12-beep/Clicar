@@ -1,39 +1,47 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <!-- Importamos Supabase aquí arriba -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>
 <body>
     <h2>Panel Admin</h2>
     <input type="text" id="modelo" placeholder="Modelo">
     <input type="number" id="precio" placeholder="Precio">
     <input type="text" id="foto" placeholder="Link de foto">
-    <button id="btnPublicar">Publicar Auto</button>
+    <button id="btnPublicar" onclick="debugSubir()">Publicar Auto</button>
     <p id="status"></p>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // 1. Inicializamos fuera de la función para que esté listo siempre
-        const supabase = supabase.createClient(
-            'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
-            'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
-        );
-
-        document.getElementById('btnPublicar').addEventListener('click', async () => {
-            document.getElementById('status').innerText = "Subiendo...";
+        function debugSubir() {
+            const status = document.getElementById('status');
+            status.innerText = "1. Botón presionado...";
+            
             try {
-                const { data, error } = await supabase.from('Autos').insert([{ 
-                    Modelo: document.getElementById('modelo').value, 
-                    Precio: document.getElementById('precio').value, 
-                    Foto: document.getElementById('foto').value 
-                }]);
+                if (typeof supabase === 'undefined') {
+                    throw new Error("La librería de Supabase no cargó.");
+                }
 
-                if (error) throw error;
-                document.getElementById('status').innerText = "¡Publicado con éxito!";
+                status.innerText = "2. Conectando a Supabase...";
+                const client = supabase.createClient(
+                    'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
+                    'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
+                );
+
+                const modelo = document.getElementById('modelo').value;
+                const precio = document.getElementById('precio').value;
+                const foto = document.getElementById('foto').value;
+
+                status.innerText = "3. Enviando datos...";
+                client.from('Autos').insert([{ Modelo: modelo, Precio: precio, Foto: foto }])
+                    .then(({ error }) => {
+                        if (error) {
+                            status.innerText = "Error: " + error.message;
+                        } else {
+                            status.innerText = "¡ÉXITO! Auto publicado.";
+                        }
+                    });
             } catch (e) {
-                document.getElementById('status').innerText = "Error: " + e.message;
+                status.innerText = "ERROR FATAL: " + e.message;
             }
-        });
+        }
     </script>
 </body>
 </html>
