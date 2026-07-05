@@ -2,20 +2,36 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>CliCar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CliCar | Catálogo</title>
     <style>
-        body { font-family: sans-serif; text-align: center; background: #f4f4f4; }
-        header { background: #003399; color: white; padding: 20px; }
-        .card { background: white; margin: 20px auto; padding: 15px; border-radius: 8px; max-width: 300px; }
+        body { 
+            margin: 0; padding: 0; font-family: sans-serif; 
+            background-color: #ffffff; /* Fondo blanco */
+            text-align: center; 
+        }
+        header { 
+            background-color: #003399; /* Azul marca */
+            color: white; 
+            padding: 25px; 
+            border-bottom: 5px solid #cc0000; /* Línea roja marca */
+        }
+        .logo { max-width: 200px; margin-bottom: 10px; background: white; padding: 5px; border-radius: 5px; }
+        .catalogo { padding: 20px; }
+        .card { 
+            border: 1px solid #ddd; margin: 15px auto; padding: 15px; 
+            border-radius: 10px; max-width: 320px; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
+
     <header>
-        <img src="logo.jpg" alt="Logo" style="max-width: 150px;">
+        <img src="https://github.com/migueltaranta12-beep/Clicar/blob/main/logo.jpg?raw=true" class="logo" alt="Logo">
         <h1>CliCar</h1>
     </header>
 
-    <div id="listaAutos">Cargando...</div>
+    <div id="listaAutos" class="catalogo">Cargando catálogo...</div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -26,17 +42,25 @@
 
         async function cargarAutos() {
             const contenedor = document.getElementById('listaAutos');
-            const { data, error } = await supabase.from('Autos').select('*');
-            
-            if (error) {
-                contenedor.innerHTML = "Error al cargar: " + error.message;
-                return;
+            try {
+                const { data, error } = await supabase.from('Autos').select('*');
+                if (error) throw error;
+                
+                contenedor.innerHTML = '';
+                if (!data || data.length === 0) contenedor.innerHTML = "No hay vehículos disponibles.";
+                
+                data.forEach(auto => {
+                    contenedor.innerHTML += `
+                        <div class="card">
+                            <h3>${auto.Modelo}</h3>
+                            <p>Precio: $${auto.Precio}</p>
+                            <img src="${auto.Foto}" style="width:100%">
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                contenedor.innerHTML = "Error de conexión. Intenta usar Wi-Fi.";
             }
-
-            contenedor.innerHTML = '';
-            data.forEach(auto => {
-                contenedor.innerHTML += `<div class="card"><h3>${auto.Modelo}</h3><p>$${auto.Precio}</p></div>`;
-            });
         }
         cargarAutos();
     </script>
