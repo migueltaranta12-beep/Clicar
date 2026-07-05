@@ -7,7 +7,7 @@
 
 <style>
 body{
-font-family:Arial;
+font-family:Arial,sans-serif;
 background:#f2f2f2;
 display:flex;
 justify-content:center;
@@ -15,12 +15,12 @@ padding:20px;
 }
 
 .panel{
-background:white;
+background:#fff;
 padding:20px;
-border-radius:10px;
-width:100%;
+border-radius:12px;
 max-width:400px;
-box-shadow:0 4px 10px rgba(0,0,0,.15);
+width:100%;
+box-shadow:0 5px 15px rgba(0,0,0,.2);
 }
 
 input,button{
@@ -32,21 +32,16 @@ box-sizing:border-box;
 
 button{
 background:#003399;
-color:white;
+color:#fff;
 border:none;
-border-radius:6px;
-font-weight:bold;
+border-radius:8px;
 font-size:16px;
 cursor:pointer;
 }
 
-button:hover{
-background:#002266;
-}
-
 #status{
-margin-top:10px;
 font-weight:bold;
+margin-top:10px;
 white-space:pre-line;
 }
 </style>
@@ -58,12 +53,13 @@ white-space:pre-line;
 
 <h2>Admin CliCar</h2>
 
-<input id="modelo" placeholder="Modelo del auto">
+<input id="modelo" placeholder="Modelo">
 
 <input id="precio" type="number" placeholder="Precio">
 
 <input id="foto" type="file" accept="image/*">
-<button onclick="alert('FUNCIONA')">Publicar</button>
+
+<button id="btn">Publicar</button>
 
 <p id="status"></p>
 
@@ -77,96 +73,36 @@ const supabase = window.supabase.createClient(
 'https://hvdmwzbvnrxhhhqdrck.supabase.co',
 'sb_publishable_yXKvcdmnwzVMTkP8Fz2AMg_9q0A0pKl'
 );
+
 document.getElementById("btn").onclick = async ()=>{
 
-alert("PASO 1");
-
 const status=document.getElementById("status");
 
-alert("PASO 2");
+status.innerText="Iniciando...";
 
 const modelo=document.getElementById("modelo").value;
 const precio=document.getElementById("precio").value;
 const foto=document.getElementById("foto").files[0];
 
-alert("PASO 3");
-
-if(!modelo || !precio || !foto){
-alert("FALTAN DATOS");
-status.innerText="Completa todos los campos";
-return;
-}
-
-alert("PASO 4");
-
-const nombre=Date.now()+"_"+foto.name;
-
-const {error:uploadError}=await supabase.storage
-.from("fotos-autos")
-.upload(nombre,foto);
-
-alert("PASO 5");
-
-if(uploadError){
-alert(uploadError.message);
-status.innerText=uploadError.message;
-return;
-}
-
-const {data}=supabase.storage
-.from("fotos-autos")
-.getPublicUrl(nombre);
-
-alert("PASO 6");
-
-const {error}=await supabase
-.from("Autos")
-.insert([{
-Modelo:modelo,
-Precio:precio,
-Foto:data.publicUrl
-}]);
-
-alert("PASO 7");
-
-if(error){
-alert(error.message);
-status.innerText=error.message;
-return;
-}
-
-status.innerText="PUBLICADO ✔";
-alert("FIN");
-};
-
-const status=document.getElementById("status");
-
-const modelo=document.getElementById("modelo").value;
-
-const precio=document.getElementById("precio").value;
-
-const foto=document.getElementById("foto").files[0];
-
 if(!modelo || !precio || !foto){
 
 status.innerText="Completa todos los campos";
-
 return;
 
 }
+
+const nombre=Date.now()+"-"+foto.name;
 
 status.innerText="Subiendo imagen...";
 
-const nombre=Date.now()+"_"+foto.name;
-
-const {error:uploadError}=await supabase.storage
+const {error:uploadError}=await supabase
+.storage
 .from("fotos-autos")
 .upload(nombre,foto);
 
 if(uploadError){
 
 status.innerText=uploadError.message;
-
 return;
 
 }
@@ -175,14 +111,14 @@ const {data}=supabase.storage
 .from("fotos-autos")
 .getPublicUrl(nombre);
 
+status.innerText="Guardando auto...";
+
 const {error}=await supabase
 .from("Autos")
 .insert([{
 
 Modelo:modelo,
-
 Precio:precio,
-
 Foto:data.publicUrl
 
 }]);
@@ -190,7 +126,6 @@ Foto:data.publicUrl
 if(error){
 
 status.innerText=error.message;
-
 return;
 
 }
