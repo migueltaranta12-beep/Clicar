@@ -2,25 +2,100 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>TEST FINAL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin CliCar</title>
+
+<style>
+body{font-family:Arial;background:#f2f2f2;display:flex;justify-content:center;padding:20px;}
+.panel{background:white;padding:20px;border-radius:10px;width:100%;max-width:400px;}
+input,button{width:100%;padding:10px;margin:8px 0;}
+button{background:#003399;color:white;border:none;}
+#status{white-space:pre-line;font-weight:bold;}
+</style>
 </head>
+
 <body>
 
-<h2>TEST</h2>
+<div class="panel">
 
-<input id="modelo" placeholder="modelo">
-<input id="precio" placeholder="precio">
+<h2>Admin CliCar</h2>
+
+<input id="modelo" placeholder="Modelo">
+<input id="precio" placeholder="Precio">
 <input type="file" id="foto">
 
-<button onclick="probar()">Publicar</button>
+<button onclick="subirAuto()">Publicar</button>
 
 <p id="status">Listo</p>
 
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 
-function probar() {
-  document.getElementById("status").innerText = "FUNCIONA ✔";
-  alert("FUNCIONA ✔");
+let status = document.getElementById("status");
+
+const supabase = window.supabase.createClient(
+'https://hvdmwzbvnrxhhhqdrck.supabase.co',
+'sb_publishable_yXKvcdmnwzVMTkP8Fz2AMg_9q0A0pKl'
+);
+
+async function subirAuto(){
+
+try{
+
+status.innerText = "1 - INICIANDO...";
+
+const modelo = document.getElementById("modelo").value;
+const precio = document.getElementById("precio").value;
+const foto = document.getElementById("foto").files[0];
+
+if(!modelo || !precio || !foto){
+status.innerText = "FALTAN DATOS";
+return;
+}
+
+status.innerText = "2 - SUBIENDO IMAGEN...";
+
+const fileName = Date.now() + "_" + foto.name;
+
+const { error: uploadError } = await supabase
+.storage
+.from("autos")
+.upload(fileName, foto);
+
+if(uploadError){
+status.innerText = "ERROR STORAGE:\n" + uploadError.message;
+return;
+}
+
+status.innerText = "3 - GUARDANDO...";
+
+const { data } = supabase
+.storage
+.from("autos")
+.getPublicUrl(fileName);
+
+const { error: dbError } = await supabase
+.from("Autos")
+.insert([{
+Modelo: modelo,
+Precio: precio,
+Foto: data.publicUrl
+}]);
+
+if(dbError){
+status.innerText = "ERROR DB:\n" + dbError.message;
+return;
+}
+
+status.innerText = "PUBLICADO ✔";
+
+}catch(err){
+status.innerText = "ERROR GENERAL:\n" + err.message;
+}
+
 }
 
 </script>
