@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Admin CliCar</title>
 
 <style>
@@ -21,58 +20,50 @@ body{
     border-radius:10px;
     width:100%;
     max-width:400px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.1);
 }
 
-h2{
-    text-align:center;
-    color:#003399;
-}
-
-input{
+input,button{
     width:100%;
     padding:10px;
     margin:8px 0;
-    border:1px solid #ccc;
-    border-radius:6px;
 }
 
 button{
-    width:100%;
-    padding:12px;
     background:#003399;
     color:white;
     border:none;
-    border-radius:6px;
-    font-weight:bold;
 }
 
 #status{
     text-align:center;
     margin-top:10px;
+    font-weight:bold;
 }
 </style>
 
 </head>
+
 <body>
 
 <div class="panel">
 
-<h2>Cargar Auto</h2>
+<h2>Admin CliCar</h2>
 
-<input type="text" id="modelo" placeholder="Modelo del auto">
+<input type="text" id="modelo" placeholder="Modelo">
 <input type="number" id="precio" placeholder="Precio">
-<input type="file" id="foto" accept="image/*">
+<input type="file" id="foto">
 
 <button onclick="subirAuto()">Publicar</button>
 
-<p id="status"></p>
+<p id="status">Listo</p>
 
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+
+console.log("ADMIN CARGADO ✔");
 
 const supabase = window.supabase.createClient(
 'https://hvdmwzbvnrxhhhqdrck.supabase.co',
@@ -81,6 +72,8 @@ const supabase = window.supabase.createClient(
 
 async function subirAuto(){
 
+console.log("CLICK EN PUBLICAR ✔");
+
 const modelo = document.getElementById("modelo").value;
 const precio = document.getElementById("precio").value;
 const foto = document.getElementById("foto").files[0];
@@ -88,34 +81,43 @@ const foto = document.getElementById("foto").files[0];
 const status = document.getElementById("status");
 
 if(!modelo || !precio || !foto){
-status.innerText = "Completa todos los campos";
+status.innerText = "FALTAN DATOS ❌";
 return;
 }
 
-status.innerText = "Subiendo imagen...";
+status.innerText = "SUBIENDO...";
 
-// subir imagen al bucket autos
+try {
+
+// 1 subir imagen
 const fileName = Date.now() + "_" + foto.name;
 
-const { error: uploadError } = await supabase
+console.log("SUBIENDO IMAGEN...");
+
+const { data, error: uploadError } = await supabase
 .storage
 .from("autos")
 .upload(fileName, foto);
 
 if(uploadError){
-status.innerText = "Error al subir imagen";
+console.log("ERROR STORAGE:", uploadError);
+status.innerText = "ERROR STORAGE";
 return;
 }
 
-// obtener URL pública
-const { data } = supabase
+console.log("IMAGEN SUBIDA ✔");
+
+// 2 url
+const { data: urlData } = supabase
 .storage
 .from("autos")
 .getPublicUrl(fileName);
 
-const imageUrl = data.publicUrl;
+const imageUrl = urlData.publicUrl;
 
-// guardar en tabla Autos
+console.log("URL:", imageUrl);
+
+// 3 guardar
 const { error } = await supabase
 .from("Autos")
 .insert([{
@@ -125,15 +127,21 @@ Foto: imageUrl
 }]);
 
 if(error){
-status.innerText = "Error al guardar";
+console.log("ERROR DB:", error);
+status.innerText = "ERROR DB";
 return;
 }
 
-status.innerText = "Auto publicado ✔";
+status.innerText = "PUBLICADO ✔";
 
-document.getElementById("modelo").value = "";
-document.getElementById("precio").value = "";
-document.getElementById("foto").value = "";
+console.log("TODO OK ✔");
+
+} catch (err) {
+
+console.log("ERROR GENERAL:", err);
+status.innerText = "ERROR GENERAL";
+
+}
 
 }
 
