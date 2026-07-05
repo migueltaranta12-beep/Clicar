@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <!-- Importamos Supabase aquí arriba -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
 <body>
     <h2>Panel Admin</h2>
     <input type="text" id="modelo" placeholder="Modelo">
@@ -8,16 +12,16 @@
     <button id="btnPublicar">Publicar Auto</button>
     <p id="status"></p>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // 1. Inicializamos fuera de la función para que esté listo siempre
+        const supabase = supabase.createClient(
+            'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
+            'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
+        );
+
         document.getElementById('btnPublicar').addEventListener('click', async () => {
-            document.getElementById('status').innerText = "Iniciando...";
+            document.getElementById('status').innerText = "Subiendo...";
             try {
-                const supabase = supabase.createClient(
-                    'https://hvdmwzbvnrxhhhqdrck.supabase.co', 
-                    'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
-                );
-                
                 const { data, error } = await supabase.from('Autos').insert([{ 
                     Modelo: document.getElementById('modelo').value, 
                     Precio: document.getElementById('precio').value, 
@@ -25,7 +29,7 @@
                 }]);
 
                 if (error) throw error;
-                document.getElementById('status').innerText = "¡Publicado!";
+                document.getElementById('status').innerText = "¡Publicado con éxito!";
             } catch (e) {
                 document.getElementById('status').innerText = "Error: " + e.message;
             }
