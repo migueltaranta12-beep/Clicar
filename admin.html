@@ -2,128 +2,28 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin CliCar</title>
-
-<style>
-body{
-    font-family: Arial;
-    background:#f2f2f2;
-    display:flex;
-    justify-content:center;
-    padding:20px;
-}
-
-.panel{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    width:100%;
-    max-width:400px;
-}
-
-input,button{
-    width:100%;
-    padding:10px;
-    margin:8px 0;
-}
-
-button{
-    background:#003399;
-    color:white;
-    border:none;
-    font-size:16px;
-}
-
-#status{
-    font-weight:bold;
-}
-</style>
+<title>TEST ADMIN</title>
 </head>
 
 <body>
 
-<div class="panel">
+<h2>TEST BOTÓN</h2>
 
-<h2>Admin CliCar</h2>
-
-<input id="modelo" placeholder="Modelo">
-<input id="precio" placeholder="Precio">
-<input id="foto" type="file">
+<input id="modelo" placeholder="modelo">
+<input id="precio" placeholder="precio">
+<input type="file" id="foto">
 
 <button id="btn">Publicar</button>
 
 <p id="status">Listo</p>
 
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
 
-console.log("ADMIN OK");
+document.getElementById("btn").addEventListener("click", function() {
+    
+    alert("EL BOTÓN FUNCIONA ✔");
 
-const supabase = window.supabase.createClient(
-'https://hvdmwzbvnrxhhhqdrck.supabase.co',
-'sb_publishable_yXKvcdmnwzVMTkP8Fz2AMg_9q0A0pKl'
-);
-
-// 👇 FORZAMOS EL CLICK (NO FALLA NUNCA)
-document.getElementById("btn").addEventListener("click", async () => {
-
-console.log("CLICK DETECTADO");
-
-document.getElementById("status").innerText = "Procesando...";
-
-const modelo = document.getElementById("modelo").value;
-const precio = document.getElementById("precio").value;
-const foto = document.getElementById("foto").files[0];
-
-if(!modelo || !precio || !foto){
-document.getElementById("status").innerText = "Faltan datos";
-return;
-}
-
-const fileName = Date.now() + "_" + foto.name;
-
-// subir imagen
-const { error: uploadError } = await supabase
-.storage
-.from("autos")
-.upload(fileName, foto);
-
-if(uploadError){
-console.log(uploadError);
-document.getElementById("status").innerText = "Error storage";
-return;
-}
-
-// url
-const { data } = supabase
-.storage
-.from("autos")
-.getPublicUrl(fileName);
-
-// guardar
-const { error } = await supabase
-.from("Autos")
-.insert([{
-Modelo: modelo,
-Precio: precio,
-Foto: data.publicUrl
-}]);
-
-if(error){
-console.log(error);
-document.getElementById("status").innerText = "Error DB";
-return;
-}
-
-document.getElementById("status").innerText = "Publicado ✔";
-
-document.getElementById("modelo").value = "";
-document.getElementById("precio").value = "";
-document.getElementById("foto").value = "";
+    document.getElementById("status").innerText = "CLICK OK";
 
 });
 
