@@ -77,8 +77,67 @@ const supabase = window.supabase.createClient(
 'https://hvdmwzbvnrxhhhqdrck.supabase.co',
 'sb_publishable_yXKvcdmnwzVMTkP8Fz2AMg_9q0A0pKl'
 );
-
 document.getElementById("btn").onclick = async ()=>{
+
+alert("PASO 1");
+
+const status=document.getElementById("status");
+
+alert("PASO 2");
+
+const modelo=document.getElementById("modelo").value;
+const precio=document.getElementById("precio").value;
+const foto=document.getElementById("foto").files[0];
+
+alert("PASO 3");
+
+if(!modelo || !precio || !foto){
+alert("FALTAN DATOS");
+status.innerText="Completa todos los campos";
+return;
+}
+
+alert("PASO 4");
+
+const nombre=Date.now()+"_"+foto.name;
+
+const {error:uploadError}=await supabase.storage
+.from("fotos-autos")
+.upload(nombre,foto);
+
+alert("PASO 5");
+
+if(uploadError){
+alert(uploadError.message);
+status.innerText=uploadError.message;
+return;
+}
+
+const {data}=supabase.storage
+.from("fotos-autos")
+.getPublicUrl(nombre);
+
+alert("PASO 6");
+
+const {error}=await supabase
+.from("Autos")
+.insert([{
+Modelo:modelo,
+Precio:precio,
+Foto:data.publicUrl
+}]);
+
+alert("PASO 7");
+
+if(error){
+alert(error.message);
+status.innerText=error.message;
+return;
+}
+
+status.innerText="PUBLICADO ✔";
+alert("FIN");
+};
 
 const status=document.getElementById("status");
 
