@@ -24,13 +24,6 @@ header{
     max-width:90%;
 }
 
-h1{
-    color:#003399;
-    font-size:46px;
-    margin-top:15px;
-    margin-bottom:10px;
-}
-
 .catalogo{
     padding:20px;
 }
@@ -65,9 +58,7 @@ h1{
 
 <header>
 
-<img src="https://github.com/migueltaranta12-beep/Clicar/blob/main/logo.jpg?raw=true" class="logo" alt="Logo">
-
-
+<img src="https://github.com/migueltaranta12-beep/Clicar/blob/main/logo.jpg?raw=true" class="logo">
 
 </header>
 
@@ -79,4 +70,41 @@ Cargando catálogo...
 
 <script>
 
-const supabase = window
+const supabase = window.supabase.createClient(
+'https://hvdmwzbvnrxhhhqdrck.supabase.co',
+'sb_publishable_yXKvcdmnwzVMTkP8Fz2AMg_9q0A0pKl'
+);
+
+async function cargarAutos(){
+
+const contenedor = document.getElementById("listaAutos");
+
+const { data, error } = await supabase
+.from("Autos")
+.select("*");
+
+if(error){
+contenedor.innerHTML = "Error al cargar autos";
+return;
+}
+
+contenedor.innerHTML = "";
+
+data.forEach(auto=>{
+contenedor.innerHTML += `
+<div class="card">
+<img src="${auto.Foto}">
+<h3>${auto.Modelo}</h3>
+<p>$${auto.Precio}</p>
+</div>
+`;
+});
+
+}
+
+cargarAutos();
+
+</script>
+
+</body>
+</html>
