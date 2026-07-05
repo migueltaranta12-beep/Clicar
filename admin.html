@@ -3,33 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Administrativo | CliCar</title>
+    <title>Admin CliCar</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f0f0f0; padding: 20px; }
-        .panel { 
-            background: white; 
-            padding: 25px; 
-            border-radius: 10px; 
-            max-width: 400px; 
-            margin: auto; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            border-top: 5px solid #003399;
+        body { font-family: sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .panel { max-width: 500px; margin: auto; padding: 20px; }
+        h2 { color: #333; }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn-publicar { 
+            width: 100%; padding: 15px; background-color: #28a745; 
+            color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; 
         }
-        h2 { color: #003399; }
-        input { width: 100%; margin-bottom: 15px; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; }
-        button { background: #003399; color: white; border: none; padding: 12px; width: 100%; cursor: pointer; border-radius: 5px; font-weight: bold; }
-        button:hover { background: #cc0000; }
-        #status { margin-top: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
+
     <div class="panel">
-        <h2>Cargar vehículo</h2>
-        <input type="text" id="modelo" placeholder="Modelo del auto">
+        <h2>Cargar nuevo vehículo</h2>
+        <input type="text" id="modelo" placeholder="Modelo">
         <input type="number" id="precio" placeholder="Precio">
-        <input type="text" id="foto" placeholder="Link de la imagen">
-        <button onclick="guardarAuto()">Guardar en Base de Datos</button>
-        <p id="status"></p>
+        <input type="file" id="foto" accept="image/*">
+        <button class="btn-publicar" onclick="subirAuto()">Publicar en Catálogo</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -39,25 +32,22 @@
             'Sb_publishable_yKXvcdmnwzVMTkPBFzAWg_9q0A0pK1'
         );
 
-        async function guardarAuto() {
-            const status = document.getElementById('status');
+        async function subirAuto() {
+            alert("Subiendo...");
+            
             const modelo = document.getElementById('modelo').value;
             const precio = document.getElementById('precio').value;
-            const foto = document.getElementById('foto').value;
-
-            status.innerHTML = "Guardando...";
-
+            // Nota: Aquí estamos enviando un texto vacío o nombre de archivo por ahora
+            // porque subir imágenes reales requiere configuración de Storage en Supabase.
+            
             const { data, error } = await supabase
                 .from('Autos')
-                .insert([{ Modelo: modelo, Precio: precio, Foto: foto }]);
+                .insert([{ Modelo: modelo, Precio: precio, Foto: 'pendiente' }]);
 
             if (error) {
-                status.innerHTML = "Error: " + error.message;
+                alert("Error: " + error.message);
             } else {
-                status.innerHTML = "¡Cargado con éxito!";
-                document.getElementById('modelo').value = '';
-                document.getElementById('precio').value = '';
-                document.getElementById('foto').value = '';
+                alert("¡Publicado con éxito!");
             }
         }
     </script>
