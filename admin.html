@@ -2,6 +2,8 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Admin CliCar</title>
 
 <style>
@@ -23,8 +25,8 @@ body{
 }
 
 h2{
-    color:#003399;
     text-align:center;
+    color:#003399;
 }
 
 input{
@@ -32,7 +34,7 @@ input{
     padding:10px;
     margin:8px 0;
     border:1px solid #ccc;
-    border-radius:5px;
+    border-radius:6px;
 }
 
 button{
@@ -41,7 +43,7 @@ button{
     background:#003399;
     color:white;
     border:none;
-    border-radius:5px;
+    border-radius:6px;
     font-weight:bold;
 }
 
@@ -58,7 +60,7 @@ button{
 
 <h2>Cargar Auto</h2>
 
-<input type="text" id="modelo" placeholder="Modelo">
+<input type="text" id="modelo" placeholder="Modelo del auto">
 <input type="number" id="precio" placeholder="Precio">
 <input type="file" id="foto" accept="image/*">
 
@@ -74,7 +76,7 @@ button{
 
 const supabase = window.supabase.createClient(
 'https://hvdmwzbvnrxhhhqdrck.supabase.co',
-'PEGAR_AQUI_ANON_KEY'
+'sb_publishable_yXKvcdmnwzVMTkP8Fz2AMg_9q0A0pKl'
 );
 
 async function subirAuto(){
@@ -92,7 +94,7 @@ return;
 
 status.innerText = "Subiendo imagen...";
 
-// 1. subir imagen al bucket autos
+// subir imagen al bucket autos
 const fileName = Date.now() + "_" + foto.name;
 
 const { error: uploadError } = await supabase
@@ -101,11 +103,11 @@ const { error: uploadError } = await supabase
 .upload(fileName, foto);
 
 if(uploadError){
-status.innerText = "Error subiendo imagen";
+status.innerText = "Error al subir imagen";
 return;
 }
 
-// 2. obtener URL pública
+// obtener URL pública
 const { data } = supabase
 .storage
 .from("autos")
@@ -113,7 +115,7 @@ const { data } = supabase
 
 const imageUrl = data.publicUrl;
 
-// 3. guardar en tabla Autos
+// guardar en tabla Autos
 const { error } = await supabase
 .from("Autos")
 .insert([{
@@ -123,7 +125,7 @@ Foto: imageUrl
 }]);
 
 if(error){
-status.innerText = "Error guardando auto";
+status.innerText = "Error al guardar";
 return;
 }
 
