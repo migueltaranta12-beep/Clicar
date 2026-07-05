@@ -1,40 +1,141 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Admin CliCar</title>
+
+<style>
+body{
+    font-family: Arial;
+    background:#f2f2f2;
+    display:flex;
+    justify-content:center;
+    padding:20px;
+}
+
+.panel{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    width:100%;
+    max-width:400px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+h2{
+    color:#003399;
+    text-align:center;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    border:1px solid #ccc;
+    border-radius:5px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:#003399;
+    color:white;
+    border:none;
+    border-radius:5px;
+    font-weight:bold;
+}
+
+#status{
+    text-align:center;
+    margin-top:10px;
+}
+</style>
+
+</head>
 <body>
-    <h2>Panel Admin</h2>
-    <input type="text" id="modelo" placeholder="Modelo">
-    <input type="number" id="precio" placeholder="Precio">
-    <input type="text" id="foto" placeholder="Link de foto">
-    <button id="btnPublicar">Publicar Auto</button>
-    <p id="status"></p>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        // 1. Aquí abajo, entre las comillas, pegá tu clave 'anon' que copiaste de Supabase
-        const SUPABASE_KEY = 'sb_publishable_yXKvcdmnwzVMTkP8Fz2AMg_9q0A0pKl';
-        const SUPABASE_URL = 'https://hvdmwzbvnrxhhhqdrck.supabase.co';
+<div class="panel">
 
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+<h2>Cargar Auto</h2>
 
-        document.getElementById('btnPublicar').addEventListener('click', async () => {
-            const status = document.getElementById('status');
-            status.innerText = "Subiendo...";
-            
-            try {
-                const modelo = document.getElementById('modelo').value;
-                const precio = document.getElementById('precio').value;
-                const foto = document.getElementById('foto').value;
+<input type="text" id="modelo" placeholder="Modelo">
+<input type="number" id="precio" placeholder="Precio">
+<input type="file" id="foto" accept="image/*">
 
-                const { error } = await supabase.from('Autos').insert([
-                    { Modelo: modelo, Precio: precio, Foto: foto }
-                ]);
+<button onclick="subirAuto()">Publicar</button>
 
-                if (error) throw error;
-                status.innerText = "¡ÉXITO! Auto publicado.";
-            } catch (e) {
-                status.innerText = "Error: " + e.message;
-            }
-        });
-    </script>
+<p id="status"></p>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const supabase = window.supabase.createClient(
+'https://hvdmwzbvnrxhhhqdrck.supabase.co',
+'PEGAR_AQUI_ANON_KEY'
+);
+
+async function subirAuto(){
+
+const modelo = document.getElementById("modelo").value;
+const precio = document.getElementById("precio").value;
+const foto = document.getElementById("foto").files[0];
+
+const status = document.getElementById("status");
+
+if(!modelo || !precio || !foto){
+status.innerText = "Completa todos los campos";
+return;
+}
+
+status.innerText = "Subiendo imagen...";
+
+// 1. subir imagen al bucket autos
+const fileName = Date.now() + "_" + foto.name;
+
+const { error: uploadError } = await supabase
+.storage
+.from("autos")
+.upload(fileName, foto);
+
+if(uploadError){
+status.innerText = "Error subiendo imagen";
+return;
+}
+
+// 2. obtener URL pública
+const { data } = supabase
+.storage
+.from("autos")
+.getPublicUrl(fileName);
+
+const imageUrl = data.publicUrl;
+
+// 3. guardar en tabla Autos
+const { error } = await supabase
+.from("Autos")
+.insert([{
+Modelo: modelo,
+Precio: precio,
+Foto: imageUrl
+}]);
+
+if(error){
+status.innerText = "Error guardando auto";
+return;
+}
+
+status.innerText = "Auto publicado ✔";
+
+document.getElementById("modelo").value = "";
+document.getElementById("precio").value = "";
+document.getElementById("foto").value = "";
+
+}
+
+</script>
+
 </body>
 </html>
