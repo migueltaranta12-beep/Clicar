@@ -20,21 +20,32 @@ padding:20px;
 border-radius:10px;
 width:100%;
 max-width:400px;
+box-shadow:0 4px 10px rgba(0,0,0,.15);
 }
 
 input,button{
 width:100%;
-padding:10px;
-margin:8px 0;
+padding:12px;
+margin:10px 0;
+box-sizing:border-box;
 }
 
 button{
 background:#003399;
 color:white;
 border:none;
+border-radius:6px;
+font-weight:bold;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:#002266;
 }
 
 #status{
+margin-top:10px;
 font-weight:bold;
 white-space:pre-line;
 }
@@ -47,90 +58,94 @@ white-space:pre-line;
 
 <h2>Admin CliCar</h2>
 
-<input id="modelo" placeholder="Modelo">
-<input id="precio" placeholder="Precio">
-<input type="file" id="foto">
+<input id="modelo" placeholder="Modelo del auto">
+
+<input id="precio" type="number" placeholder="Precio">
+
+<input id="foto" type="file" accept="image/*">
 
 <button id="btn">Publicar</button>
 
-<p id="status">Listo</p>
+<p id="status"></p>
 
 </div>
 
-<!-- 🔥 IMPORTANTE: cargar primero -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-
-window.addEventListener("load", () => {
-
-const status = document.getElementById("status");
 
 const supabase = window.supabase.createClient(
 'https://hvdmwzbvnrxhhhqdrck.supabase.co',
 'sb_publishable_yXKvcdmnwzVMTkP8Fz2AMg_9q0A0pKl'
 );
 
-document.getElementById("btn").addEventListener("click", async () => {
+document.getElementById("btn").onclick = async ()=>{
 
-try{
+const status=document.getElementById("status");
 
-status.innerText = "INICIANDO...";
+const modelo=document.getElementById("modelo").value;
 
-const modelo = document.getElementById("modelo").value;
-const precio = document.getElementById("precio").value;
-const foto = document.getElementById("foto").files[0];
+const precio=document.getElementById("precio").value;
+
+const foto=document.getElementById("foto").files[0];
 
 if(!modelo || !precio || !foto){
-status.innerText = "FALTAN DATOS";
+
+status.innerText="Completa todos los campos";
+
 return;
+
 }
 
-const fileName = Date.now() + "_" + foto.name;
+status.innerText="Subiendo imagen...";
 
-status.innerText = "SUBIENDO IMAGEN...";
+const nombre=Date.now()+"_"+foto.name;
 
-const { error: uploadError } = await supabase
-.storage
-.from("autos")
-.upload(fileName, foto);
+const {error:uploadError}=await supabase.storage
+.from("fotos-autos")
+.upload(nombre,foto);
 
 if(uploadError){
-status.innerText = "ERROR STORAGE:\n" + uploadError.message;
+
+status.innerText=uploadError.message;
+
 return;
+
 }
 
-const { data } = supabase
-.storage
-.from("autos")
-.getPublicUrl(fileName);
+const {data}=supabase.storage
+.from("fotos-autos")
+.getPublicUrl(nombre);
 
-status.innerText = "GUARDANDO...";
-
-const { error: dbError } = await supabase
+const {error}=await supabase
 .from("Autos")
 .insert([{
-Modelo: modelo,
-Precio: precio,
-Foto: data.publicUrl
+
+Modelo:modelo,
+
+Precio:precio,
+
+Foto:data.publicUrl
+
 }]);
 
-if(dbError){
-status.innerText = "ERROR DB:\n" + dbError.message;
+if(error){
+
+status.innerText=error.message;
+
 return;
+
 }
 
-status.innerText = "PUBLICADO ✔";
+status.innerText="✅ Publicado correctamente";
 
-}catch(err){
-status.innerText = "ERROR GENERAL:\n" + err.message;
-}
+document.getElementById("modelo").value="";
+document.getElementById("precio").value="";
+document.getElementById("foto").value="";
 
-});
-
-});
+};
 
 </script>
 
 </body>
-  </html>
+</html>
