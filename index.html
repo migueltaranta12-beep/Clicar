@@ -84,7 +84,8 @@ const { data, error } = await supabase
 .select("*");
 
 if(error){
-contenedor.innerHTML = "Error al cargar autos";
+contenedor.innerHTML =
+"<h2 style='color:red'>" + error.message + "</h2>";
 return;
 }
 
