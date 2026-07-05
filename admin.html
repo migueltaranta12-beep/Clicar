@@ -2,27 +2,23 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin CliCar</title>
     <style>
         body { font-family: sans-serif; background-color: #f4f4f4; padding: 20px; }
-        .panel { max-width: 500px; margin: auto; padding: 20px; }
-        h2 { color: #333; }
-        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .btn-publicar { 
-            width: 100%; padding: 15px; background-color: #28a745; 
-            color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; 
-        }
+        .panel { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h2 { color: #003399; }
+        input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .btn-green { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
-
     <div class="panel">
         <h2>Cargar nuevo vehículo</h2>
-        <input type="text" id="modelo" placeholder="Modelo">
+        <input type="text" id="modelo" placeholder="Modelo del auto">
         <input type="number" id="precio" placeholder="Precio">
-        <input type="file" id="foto" accept="image/*">
-        <button class="btn-publicar" onclick="subirAuto()">Publicar en Catálogo</button>
+        <input type="text" id="foto" placeholder="Link de la imagen">
+        <button class="btn-green" onclick="subirAuto()">Publicar en Catálogo</button>
+        <p id="status"></p>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -33,21 +29,22 @@
         );
 
         async function subirAuto() {
-            alert("Subiendo...");
+            const status = document.getElementById('status');
+            status.innerText = "Subiendo...";
             
-            const modelo = document.getElementById('modelo').value;
-            const precio = document.getElementById('precio').value;
-            // Nota: Aquí estamos enviando un texto vacío o nombre de archivo por ahora
-            // porque subir imágenes reales requiere configuración de Storage en Supabase.
-            
-            const { data, error } = await supabase
-                .from('Autos')
-                .insert([{ Modelo: modelo, Precio: precio, Foto: 'pendiente' }]);
+            const { error } = await supabase.from('Autos').insert([{ 
+                Modelo: document.getElementById('modelo').value, 
+                Precio: document.getElementById('precio').value, 
+                Foto: document.getElementById('foto').value 
+            }]);
 
-            if (error) {
-                alert("Error: " + error.message);
-            } else {
-                alert("¡Publicado con éxito!");
+            if (error) status.innerText = "Error: " + error.message;
+            else {
+                status.innerText = "¡Publicado con éxito!";
+                // Limpiar campos
+                document.getElementById('modelo').value = '';
+                document.getElementById('precio').value = '';
+                document.getElementById('foto').value = '';
             }
         }
     </script>
