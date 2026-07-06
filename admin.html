@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin CliCar</title>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 body{
 font-family:Arial,sans-serif;
@@ -39,10 +41,13 @@ font-size:16px;
 cursor:pointer;
 }
 
+button:hover{
+background:#0055cc;
+}
+
 #status{
+margin-top:15px;
 font-weight:bold;
-margin-top:10px;
-white-space:pre-line;
 }
 </style>
 </head>
@@ -65,45 +70,45 @@ white-space:pre-line;
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
 
 const supabase = window.supabase.createClient(
-'https://hvdmwzbvnrxhhhqdrck.supabase.co',
-'sb_publishable_yXKvcdmnwzVMTkP8Fz2AMg_9q0A0pKl'
+"https://hvdmwzbvnrxhhhqdrxk.supabase.co",
+"sb_publishable_yXKvcdmnwzVMTkP8Fz2AMg_9q0A0pKl"
 );
 
-document.getElementById("btn").onclick = async ()=>{
-  alert("Botón funcionando");
+const btn=document.getElementById("btn");
+
+btn.addEventListener("click",async()=>{
 
 const status=document.getElementById("status");
 
-status.innerText="Iniciando...";
+const modelo=document.getElementById("modelo").value.trim();
 
-const modelo=document.getElementById("modelo").value;
-const precio=document.getElementById("precio").value;
+const precio=document.getElementById("precio").value.trim();
+
 const foto=document.getElementById("foto").files[0];
 
-if(!modelo || !precio || !foto){
+if(!modelo||!precio||!foto){
 
-status.innerText="Completa todos los campos";
+status.innerHTML="Completa todos los campos";
+
 return;
 
 }
 
-const nombre=Date.now()+"-"+foto.name;
+status.innerHTML="Subiendo imagen...";
 
-status.innerText="Subiendo imagen...";
+const nombre=Date.now()+"_"+foto.name;
 
-const {error:uploadError}=await supabase
-.storage
+const {error:uploadError}=await supabase.storage
 .from("fotos-autos")
 .upload(nombre,foto);
 
 if(uploadError){
 
-status.innerText=uploadError.message;
+status.innerHTML=uploadError.message;
+
 return;
 
 }
@@ -111,33 +116,28 @@ return;
 const {data}=supabase.storage
 .from("fotos-autos")
 .getPublicUrl(nombre);
-
-status.innerText="Guardando auto...";
-
-const {error}=await supabase
+  const { error } = await supabase
 .from("Autos")
-.insert([{
-
-Modelo:modelo,
-Precio:precio,
-Foto:data.publicUrl
-
-}]);
+.insert([
+{
+Modelo: modelo,
+Precio: Number(precio),
+Foto: data.publicUrl
+}
+]);
 
 if(error){
-
-status.innerText=error.message;
+status.innerHTML="❌ "+error.message;
 return;
-
 }
 
-status.innerText="✅ Publicado correctamente";
+status.innerHTML="✅ Auto publicado correctamente";
 
 document.getElementById("modelo").value="";
 document.getElementById("precio").value="";
 document.getElementById("foto").value="";
 
-};
+});
 
 </script>
 
