@@ -170,3 +170,43 @@ publicar.addEventListener("click", async (e) => {
     }
 
 });
+subirBanner.addEventListener("click", async (e) => {
+
+    e.preventDefault();
+
+    if (!banner.files.length) {
+        estadoBanner.textContent = "⚠️ Seleccioná una imagen.";
+        return;
+    }
+
+    estadoBanner.textContent = "📤 Subiendo banner...";
+
+    try {
+
+        const urlBanner = await subirImagenCloudinary(banner.files[0]);
+
+        const id = "banner" + Date.now();
+
+        await setDoc(doc(db, "Banners", id), {
+            imagen: urlBanner,
+            creado: Date.now()
+        });
+
+        estadoBanner.textContent = "✅ Banner subido correctamente.";
+
+        document.getElementById("formBanner").reset();
+
+        previewBanner.src =
+        "https://placehold.co/1200x400?text=Banner";
+
+    } catch (error) {
+
+        console.error(error);
+
+        estadoBanner.textContent =
+        "❌ Error al subir el banner.";
+
+    }
+
+});
+
