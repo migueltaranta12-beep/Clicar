@@ -224,6 +224,36 @@ subirBanner.addEventListener("click", async (e) => {
     }
 
 });
+subirLogo.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    if (!logo.files.length) {
+        estadoLogo.textContent = "⚠️ Seleccioná un logo.";
+        return;
+    }
+
+    estadoLogo.textContent = "📤 Subiendo logo...";
+
+    try {
+        const urlLogo = await subirImagenCloudinary(logo.files[0]);
+
+        await setDoc(doc(db, "config", "logo"), {
+            imagen: urlLogo,
+            creado: Date.now()
+        });
+
+        estadoLogo.textContent = "✅ Logo subido correctamente.";
+
+        document.getElementById("formLogo").reset();
+
+        previewLogo.src = urlLogo;
+
+    } catch (error) {
+        console.error(error);
+
+        estadoLogo.textContent = "❌ Error al subir el logo.";
+    }
+});
 logo.addEventListener("change", (e) => {
     const archivo = e.target.files[0];
     if (!archivo) return;
