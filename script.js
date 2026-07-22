@@ -239,4 +239,12 @@ logo.addEventListener("change", (e) => {
 cerrarSesion.addEventListener("click", async () => {
   await signOut(auth);
   window.location.href = "login.html";
+  const cerrarSesion = document.getElementById("cerrarSesion");
+
+if (cerrarSesion) {
+  cerrarSesion.addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = "login.html";
+  });
+}
 });
