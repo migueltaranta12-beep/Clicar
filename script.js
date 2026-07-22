@@ -18,7 +18,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-onAuthStateChanged(auth, (!user) => {
+onAuthStateChanged(auth, (user) => {
   if (!user) {
     window.location.href = "login.html";
   }
@@ -236,7 +236,7 @@ logo.addEventListener("change", (e) => {
 
     lector.readAsDataURL(archivo);
 });
-const cerrarSesion = document.getElementById("cerrarSesion");
+
 
 if (cerrarSesion) {
   cerrarSesion.addEventListener("click", async () => {
