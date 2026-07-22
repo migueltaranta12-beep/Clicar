@@ -187,7 +187,7 @@ subirBanner.addEventListener("click", async (e) => {
 
         const id = "banner" + Date.now();
 
-        await setDoc(doc(db, "Banners", id), {
+        await setDoc(doc(db, "banners", id), {
             imagen: urlBanner,
             creado: Date.now()
         });
