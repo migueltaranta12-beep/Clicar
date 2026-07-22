@@ -3,9 +3,9 @@ import { firebaseConfig, cloudinaryConfig } from "./firebase.js";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
-  getFirestore,
-  collection,
-  addDoc
+getFirestore,
+collection,
+addDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const app = initializeApp(firebaseConfig);
@@ -26,16 +26,123 @@ const previewDescripcion = document.getElementById("previewDescripcion");
 
 const publicar = document.getElementById("publicar");
 const estado = document.getElementById("estado");
-
-function actualizarVista(){
+function actualizarVista() {
 
     previewTitulo.textContent =
-        marca.value + " " + modelo.value;
+        `${marca.value} ${modelo.value}`.trim() || "Marca Modelo";
 
     previewPrecio.textContent =
-        "$ " + precio.value;
+        precio.value ? `$ ${precio.value}` : "$0";
 
     previewDescripcion.textContent =
         descripcion.value || "Sin descripción";
 
 }
+
+function actualizarImagen(e) {
+
+    const archivo = e.target.files[0];
+
+    if (!archivo) return;
+
+    const lector = new FileReader();
+
+    lector.onload = (evento) => {
+
+        previewImagen.src = evento.target.result;
+
+    };
+
+    lector.readAsDataURL(archivo);
+
+}
+
+marca.addEventListener("input", actualizarVista);
+modelo.addEventListener("input", actualizarVista);
+precio.addEventListener("input", actualizarVista);
+descripcion.addEventListener("input", actualizarVista);
+
+imagen.addEventListener("change", actualizarImagen);
+
+actualizarVista();
+async function subirImagenCloudinary(archivo) {
+
+    const formData = new FormData();
+
+    formData.append("file", archivo);
+    formData.append("upload_preset", cloudinaryConfig.uploadPreset);
+
+    const respuesta = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`,
+        {
+            method: "POST",
+            body: formData
+        }
+    );
+
+    if (!respuesta.ok) {
+        throw new Error("No se pudo subir la imagen.");
+    }
+
+    const datos = await respuesta.json();
+
+    return datos.secure_url;
+
+}
+
+publicar.addEventListener("click", async (e) => {
+
+    e.preventDefault();
+
+    if (
+        !marca.value ||
+        !modelo.value ||
+        !anio.value ||
+        !precio.value ||
+        !km.value ||
+        !imagen.files.length
+    ) {
+
+        estado.textContent = "⚠️ Completá todos los campos.";
+
+        return;
+
+    }
+
+    estado.textContent = "📤 Subiendo imagen...";
+
+    try {
+
+        const urlImagen = await subirImagenCloudinary(imagen.files[0]);
+              await addDoc(collection(db, "autos"), {
+            marca: marca.value,
+            modelo: modelo.value,
+            anio: Number(anio.value),
+            precio: Number(precio.value),
+            km: Number(km.value),
+            descripcion: descripcion.value,
+            imagen: urlImagen,
+            creado: Date.now()
+        });
+
+        estado.textContent = "✅ Vehículo publicado correctamente.";
+
+        document.getElementById("formAuto").reset();
+
+        previewImagen.src =
+            "https://placehold.co/700x450?text=Sin+Imagen";
+
+        previewTitulo.textContent = "Marca Modelo";
+        previewPrecio.textContent = "$0";
+        previewDescripcion.textContent = "Sin descripción";
+
+    } catch (error) {
+
+        console.error(error);
+
+        estado.textContent =
+            "❌ Ocurrió un error al publicar el vehículo.";
+
+    }
+
+});
