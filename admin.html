@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Panel de Administración | CliCar</title>
+<title>Admin - CliCar</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -16,56 +16,87 @@
 
 <header>
 
-<img src="logo.jpg" alt="Logo">
+<img src="logo.jpg" class="logo" alt="Logo">
 
 <h1>Panel de Administración</h1>
 
-<p>Publicá vehículos en segundos</p>
+<p>Publicá vehículos fácilmente</p>
 
 </header>
 
-<div class="container">
+<main class="container">
 
-<div class="card">
+<section class="card">
 
 <h2>Nuevo vehículo</h2>
 
+<form id="formAuto">
+
+<label>Marca</label>
 <input
+type="text"
 id="marca"
-type="text"
-placeholder="Marca">
+required>
 
+<label>Modelo</label>
 <input
+type="text"
 id="modelo"
-type="text"
-placeholder="Modelo">
+required>
 
+<label>Año</label>
 <input
+type="number"
 id="anio"
-type="number"
-placeholder="Año">
+required>
 
+<label>Precio</label>
 <input
+type="number"
 id="precio"
-type="number"
-placeholder="Precio">
+required>
 
+<label>Kilómetros</label>
 <input
-id="km"
 type="number"
-placeholder="Kilómetros">
+id="km"
+required>
+
+<label>Descripción</label>
 
 <textarea
 id="descripcion"
-placeholder="Descripción">
-</textarea>
+rows="5"></textarea>
+
+<label>Imagen</label>
 
 <input
-id="imagen"
 type="file"
-accept="image/*">
+id="imagen"
+accept="image/*"
+required>
+  <div class="preview">
 
-<button id="publicar">
+<h3>Vista previa</h3>
+
+<img
+id="previewImagen"
+src="https://placehold.co/700x450?text=Sin+Imagen"
+alt="Vista previa">
+
+<h2 id="previewTitulo">Marca Modelo</h2>
+
+<p id="previewPrecio">$0</p>
+
+<p id="previewDescripcion">
+Sin descripción
+</p>
+
+</div>
+
+<button
+type="submit"
+id="publicar">
 
 🚗 Publicar Vehículo
 
@@ -73,49 +104,22 @@ accept="image/*">
 
 <p id="estado"></p>
 
-</div>
+</form>
 
-<div class="card">
+</section>
 
-<h2>Vista previa</h2>
+<section class="card">
 
-<div class="auto">
+<h2>Información</h2>
 
-<img
-id="previewImagen"
-src="https://placehold.co/900x600?text=Sin+Imagen">
-
-<div class="info">
-
-<h2 id="previewTitulo">
-
-Marca Modelo
-
-</h2>
-
-<div
-class="precio"
-id="previewPrecio">
-
-$0
-
-</div>
-
-<p
-class="descripcion"
-id="previewDescripcion">
-
-Sin descripción
-
+<p>
+Completá todos los datos del vehículo y presioná Publicar.
 </p>
 
-</div>
+</section>
 
-</div>
+</main>
 
-</div>
-
-</div>
 <script type="module" src="script.js"></script>
 
 </body>
