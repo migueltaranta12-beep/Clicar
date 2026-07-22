@@ -1,7 +1,10 @@
 import { firebaseConfig, cloudinaryConfig } from "./firebase.js";
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
 getFirestore,
 collection,
@@ -12,7 +15,13 @@ setDoc
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+  }
+});
 const marca = document.getElementById("marca");
 const modelo = document.getElementById("modelo");
 const anio = document.getElementById("anio");
