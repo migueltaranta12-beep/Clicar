@@ -171,7 +171,13 @@ snapshot.forEach(doc=>{
 
 const auto = doc.data();
 
+```javascript
 contenedor.innerHTML += `
+
+<a
+href="https://wa.me/5492995222215?text=Hola,%20me%20interesa%20el%20${encodeURIComponent(auto.marca + " " + auto.modelo)}%20que%20vi%20en%20CliCar.%20¿Sigue%20disponible?"
+target="_blank"
+style="text-decoration:none;color:inherit;">
 
 <div class="card">
 
@@ -185,9 +191,13 @@ contenedor.innerHTML += `
 $${Number(auto.precio).toLocaleString("es-AR")}
 </div>
 
-<div class="dato"><strong>Año:</strong> ${auto.anio}</div>
+<div class="dato">
+<strong>Año:</strong> ${auto.anio}
+</div>
 
-<div class="dato"><strong>Km:</strong> ${Number(auto.km).toLocaleString("es-AR")}</div>
+<div class="dato">
+<strong>Km:</strong> ${Number(auto.km).toLocaleString("es-AR")}
+</div>
 
 <div class="descripcion">
 ${auto.descripcion || ""}
@@ -197,23 +207,6 @@ ${auto.descripcion || ""}
 
 </div>
 
+</a>
+
 `;
-
-});
-
-}catch(error){
-
-console.error(error);
-
-contenedor.innerHTML =
-"<h2>Error al cargar el catálogo.</h2>";
-
-}
-
-}
-
-cargarAutos();
-</script>
-
-</body>
-</html>
