@@ -1,110 +1,218 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>CliCar | Catálogo</title>
 
 <style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
 body{
-    margin:0;
-    font-family:Arial,sans-serif;
-    background:#ffffff;
-    text-align:center;
+font-family:Arial,sans-serif;
+background:#f5f5f5;
+color:#222;
 }
 
 header{
-    background:#ffffff;
-    padding:30px 20px;
+background:#fff;
+padding:30px;
+text-align:center;
+box-shadow:0 2px 10px rgba(0,0,0,.1);
 }
 
 .logo{
-    width:220px;
-    max-width:90%;
+width:220px;
+max-width:90%;
+}
+
+h1{
+margin-top:15px;
+color:#003399;
 }
 
 .catalogo{
-    padding:20px;
+max-width:1200px;
+margin:40px auto;
+padding:20px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:25px;
 }
 
 .card{
-    background:#fff;
-    border-radius:15px;
-    padding:15px;
-    margin:20px auto;
-    max-width:340px;
-    box-shadow:0 5px 15px rgba(0,0,0,.15);
+background:#fff;
+border-radius:15px;
+overflow:hidden;
+box-shadow:0 5px 15px rgba(0,0,0,.15);
+transition:.25s;
+}
+
+.card:hover{
+transform:translateY(-5px);
 }
 
 .card img{
-    width:100%;
-    border-radius:10px;
+width:100%;
+height:220px;
+object-fit:cover;
 }
 
-.card h3{
-    color:#003399;
+.info{
+padding:18px;
+text-align:left;
 }
 
-.card p{
-    color:#cc0000;
-    font-size:20px;
-    font-weight:bold;
+.info h2{
+color:#003399;
+margin-bottom:10px;
 }
+
+.precio{
+color:#d60000;
+font-size:26px;
+font-weight:bold;
+margin-bottom:10px;
+}
+
+.dato{
+margin:6px 0;
+}
+
+.descripcion{
+margin-top:12px;
+color:#555;
+line-height:1.4;
+}
+
+footer{
+margin-top:40px;
+padding:25px;
+text-align:center;
+background:#fff;
+color:#777;
+}
+
 </style>
 
 </head>
+
 <body>
 
 <header>
 
-<img src="https://github.com/migueltaranta12-beep/Clicar/blob/main/logo.jpg?raw=true" class="logo">
+<img src="logo.jpg" class="logo" alt="CliCar">
+
+<h1>Catálogo de Vehículos</h1>
 
 </header>
 
 <div id="listaAutos" class="catalogo">
-Cargando catálogo...
+
+<h2>Cargando vehículos...</h2>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<footer>
 
-<script>
+© CliCar
 
-const supabase = window.supabase.createClient(
-'https://hvdmwzbvnrxhhhqdrck.supabase.co',
-'sb_publishable_yXKvcdmnwzVMTkP8Fz2AMg_9q0A0pKl'
-);
+</footer>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+getDocs,
+query,
+orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import { firebaseConfig } from "./firebase.js";
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 async function cargarAutos(){
 
 const contenedor = document.getElementById("listaAutos");
 
-const { data, error } = await supabase
-.from("Autos")
-.select("*");
-
-if(error){
-contenedor.innerHTML =
-"<h2 style='color:red'>" + error.message + "</h2>";
-return;
-}
-
 contenedor.innerHTML = "";
 
-data.forEach(auto=>{
-contenedor.innerHTML += `
-<div class="card">
-<img src="${auto.Foto}">
-<h3>${auto.Modelo}</h3>
-<p>$${auto.Precio}</p>
-</div>
-`;
-});
+try{
+
+const consulta = query(
+collection(db,"autos"),
+orderBy("creado","desc")
+);
+
+const snapshot = await getDocs(consulta);
+
+if(snapshot.empty){
+
+contenedor.innerHTML =
+"<h2>No hay vehículos publicados.</h2>";
+
+return;
 
 }
-alert("JavaScript cargado");
-cargarAutos();
 
+snapshot.forEach(doc=>{
+
+const auto = doc.data();
+
+contenedor.innerHTML += `
+
+<div class="card">
+
+<img src="${auto.imagen}" alt="${auto.marca} ${auto.modelo}">
+
+<div class="info">
+
+<h2>${auto.marca} ${auto.modelo}</h2>
+
+<div class="precio">
+$${Number(auto.precio).toLocaleString("es-AR")}
+</div>
+
+<div class="dato"><strong>Año:</strong> ${auto.anio}</div>
+
+<div class="dato"><strong>Km:</strong> ${Number(auto.km).toLocaleString("es-AR")}</div>
+
+<div class="descripcion">
+${auto.descripcion || ""}
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}catch(error){
+
+console.error(error);
+
+contenedor.innerHTML =
+"<h2>Error al cargar el catálogo.</h2>";
+
+}
+
+}
+
+cargarAutos();
 </script>
 
 </body>
