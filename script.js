@@ -28,6 +28,10 @@ const previewDescripcion = document.getElementById("previewDescripcion");
 
 const publicar = document.getElementById("publicar");
 const estado = document.getElementById("estado");
+const banner = document.getElementById("banner");
+const previewBanner = document.getElementById("previewBanner");
+const subirBanner = document.getElementById("subirBanner");
+const estadoBanner = document.getElementById("estadoBanner");
 function actualizarVista() {
 
     previewTitulo.textContent =
