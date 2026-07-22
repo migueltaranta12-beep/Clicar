@@ -173,6 +173,11 @@ const auto = doc.data();
 
 contenedor.innerHTML += `
 
+<a
+href="https://wa.me/5492995222215?text=${encodeURIComponent(`Hola, me interesa el ${auto.marca} ${auto.modelo} que vi en CliCar. ¿Sigue disponible?`)}"
+target="_blank"
+style="text-decoration:none;color:inherit;display:block;">
+
 <div class="card">
 
 <img src="${auto.imagen}" alt="${auto.marca} ${auto.modelo}">
