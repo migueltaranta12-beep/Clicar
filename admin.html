@@ -1,145 +1,122 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin CliCar</title
-                     
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<style>
-body{
-font-family:Arial,sans-serif;
-background:#f2f2f2;
-display:flex;
-justify-content:center;
-padding:20px;
-}
 
-.panel{
-background:#fff;
-padding:20px;
-border-radius:12px;
-max-width:400px;
-width:100%;
-box-shadow:0 5px 15px rgba(0,0,0,.2);
-}
+<title>Panel de Administración | CliCar</title>
 
-input,button{
-width:100%;
-padding:12px;
-margin:10px 0;
-box-sizing:border-box;
-}
+<link rel="stylesheet" href="style.css">
 
-button{
-background:#003399;
-color:#fff;
-border:none;
-border-radius:8px;
-font-size:16px;
-cursor:pointer;
-}
-
-button:hover{
-background:#0055cc;
-}
-
-#status{
-margin-top:15px;
-font-weight:bold;
-}
-</style>
 </head>
 
 <body>
 
-<div class="panel">
+<header>
 
-<h2>Admin CliCar</h2>
+<img src="logo.jpg" alt="Logo">
 
-<input id="modelo" placeholder="Modelo">
+<h1>Panel de Administración</h1>
 
-<input id="precio" type="number" placeholder="Precio">
+<p>Publicá vehículos en segundos</p>
 
-<input id="foto" type="file" accept="image/*">
+</header>
 
-<button id="btn">Publicar</button>
+<div class="container">
 
-<p id="status"></p>
+<div class="card">
+
+<h2>Nuevo vehículo</h2>
+
+<input
+id="marca"
+type="text"
+placeholder="Marca">
+
+<input
+id="modelo"
+type="text"
+placeholder="Modelo">
+
+<input
+id="anio"
+type="number"
+placeholder="Año">
+
+<input
+id="precio"
+type="number"
+placeholder="Precio">
+
+<input
+id="km"
+type="number"
+placeholder="Kilómetros">
+
+<textarea
+id="descripcion"
+placeholder="Descripción">
+</textarea>
+
+<input
+id="imagen"
+type="file"
+accept="image/*">
+
+<button id="publicar">
+
+🚗 Publicar Vehículo
+
+</button>
+
+<p id="estado"></p>
 
 </div>
 
-<script>
+<div class="card">
 
-const supabase = window.supabase.createClient(
-  "https://hvdmwzbvnrxhhhqdrck.supabase.co",
-"sb_publishable_yXKvcdmnwzVMTkP8Fz2AMg_9q0A0pKl"
-);
+<h2>Vista previa</h2>
 
-const btn=document.getElementById("btn");
+<div class="auto">
 
-btn.addEventListener("click",async()=>{
-  alert("Entró al botón");
+<img
+id="previewImagen"
+src="https://placehold.co/900x600?text=Sin+Imagen">
 
-const status=document.getElementById("status");
+<div class="info">
 
-const modelo=document.getElementById("modelo").value.trim();
+<h2 id="previewTitulo">
 
-const precio=document.getElementById("precio").value.trim();
+Marca Modelo
 
-const foto=document.getElementById("foto").files[0];
+</h2>
 
-if(!modelo||!precio||!foto){
+<div
+class="precio"
+id="previewPrecio">
 
-status.innerHTML="Completa todos los campos";
+$0
 
-return;
+</div>
 
-}
+<p
+class="descripcion"
+id="previewDescripcion">
 
-status.innerHTML="Subiendo imagen...";
+Sin descripción
 
-const nombre=Date.now()+"_"+foto.name;
+</p>
 
-const {error:uploadError}=await supabase.storage
-.from("fotos-autos")
-.upload(nombre,foto);
+</div>
 
-if(uploadError){
+</div>
 
-status.innerHTML=uploadError.message;
+</div>
 
-return;
-
-}
-
-const {data}=supabase.storage
-.from("fotos-autos")
-.getPublicUrl(nombre);
-  const { error } = await supabase
-.from("Autos")
-.insert([
-{
-Modelo: modelo,
-Precio: Number(precio),
-Foto: data.publicUrl
-}
-]);
-
-if(error){
-status.innerHTML="❌ "+error.message;
-return;
-}
-
-status.innerHTML="✅ Auto publicado correctamente";
-
-document.getElementById("modelo").value="";
-document.getElementById("precio").value="";
-document.getElementById("foto").value="";
-
-});
-
-</script>
+</div>
+<script type="module" src="script.js"></script>
 
 </body>
 </html>
