@@ -461,3 +461,101 @@ target="_blank">
 💬
 
 </a>
+  <script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+import { firebaseConfig } from "./firebase.js";
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+async function cargarAutos() {
+
+  const contenedor = document.getElementById("listaAutos");
+  contenedor.innerHTML = "";
+
+  try {
+
+    const consulta = query(
+      collection(db, "autos"),
+      orderBy("creado", "desc")
+    );
+
+    const snapshot = await getDocs(consulta);
+
+    if (snapshot.empty) {
+      contenedor.innerHTML = `
+      <div class="box" style="grid-column:1/-1;text-align:center;">
+        <h3>No hay vehículos publicados</h3>
+        <p>Próximamente habrá nuevas oportunidades disponibles.</p>
+      </div>`;
+      return;
+    }
+
+    snapshot.forEach(doc => {
+
+      const auto = doc.data();
+
+      const mensaje = encodeURIComponent(
+        `Hola, me interesa el ${auto.marca} ${auto.modelo} que vi en CliCar. ¿Sigue disponible?`
+      );
+
+      contenedor.innerHTML += `
+      <a href="https://wa.me/5492995222215?text=${mensaje}"
+         target="_blank"
+         style="text-decoration:none;color:inherit;display:block;">
+
+        <div class="card">
+
+          <img src="${auto.imagen}" alt="${auto.marca} ${auto.modelo}">
+
+          <div class="info">
+
+            <h2>${auto.marca} ${auto.modelo}</h2>
+
+            <div class="precio">
+              $${Number(auto.precio).toLocaleString("es-AR")}
+            </div>
+
+            <p><strong>Año:</strong> ${auto.anio}</p>
+
+            <p><strong>Kilómetros:</strong> ${Number(auto.km).toLocaleString("es-AR")}</p>
+
+            <p style="margin-top:15px;">
+              ${auto.descripcion || ""}
+            </p>
+
+          </div>
+
+        </div>
+
+      </a>`;
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    contenedor.innerHTML = `
+    <div class="box" style="grid-column:1/-1;text-align:center;">
+      <h3>Error al cargar los vehículos.</h3>
+      <p>${error.message}</p>
+    </div>`;
+  }
+}
+
+cargarAutos();
+
+</script>
+
+</body>
+</html>
