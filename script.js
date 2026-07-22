@@ -45,6 +45,7 @@ const estadoBanner = document.getElementById("estadoBanner");
 const logo = document.getElementById("logo");
 const previewLogo = document.getElementById("previewLogo");
 const subirLogo = document.getElementById("subirLogo");
+const cerrarSesion = document.getElementById("cerrarSesion");
 const estadoLogo = document.getElementById("estadoLogo");
 function actualizarVista() {
 
