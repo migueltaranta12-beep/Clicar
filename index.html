@@ -128,8 +128,9 @@ color:#777;
 </footer>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    <script type="module">
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
 getFirestore,
 collection,
@@ -171,12 +172,16 @@ snapshot.forEach(doc=>{
 
 const auto = doc.data();
 
+const mensaje = encodeURIComponent(
+`Hola, me interesa el ${auto.marca} ${auto.modelo} que vi en CliCar. ¿Sigue disponible?`
+);
+
 contenedor.innerHTML += `
 
 <a
-href="https://wa.me/5492995222215?text=Hola,%20me%20interesa%20el%20${encodeURIComponent(auto.marca + " " + auto.modelo)}%20que%20vi%20en%20CliCar.%20¿Sigue%20disponible?"
+href="https://wa.me/5492995222215?text=${mensaje}"
 target="_blank"
-style="text-decoration:none;color:inherit;">
+style="text-decoration:none;color:inherit;display:block;">
 
 <div class="card">
 
@@ -209,3 +214,23 @@ ${auto.descripcion || ""}
 </a>
 
 `;
+
+});
+
+}catch(error){
+
+console.error(error);
+
+contenedor.innerHTML =
+"<h2>Error al cargar el catálogo.</h2>";
+
+}
+
+}
+
+cargarAutos();
+
+</script>
+
+</body>
+</html>
