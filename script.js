@@ -69,7 +69,25 @@ precio.addEventListener("input", actualizarVista);
 descripcion.addEventListener("input", actualizarVista);
 
 imagen.addEventListener("change", actualizarImagen);
+imagen.addEventListener("change", actualizarImagen);
 
+banner.addEventListener("change", (e) => {
+
+    const archivo = e.target.files[0];
+
+    if (!archivo) return;
+
+    const lector = new FileReader();
+
+    lector.onload = (evento) => {
+        previewBanner.src = evento.target.result;
+    };
+
+    lector.readAsDataURL(archivo);
+
+});
+
+actualizarVista();
 actualizarVista();
 async function subirImagenCloudinary(archivo) {
 
