@@ -236,10 +236,7 @@ logo.addEventListener("change", (e) => {
 
     lector.readAsDataURL(archivo);
 });
-cerrarSesion.addEventListener("click", async () => {
-  await signOut(auth);
-  window.location.href = "login.html";
-  const cerrarSesion = document.getElementById("cerrarSesion");
+const cerrarSesion = document.getElementById("cerrarSesion");
 
 if (cerrarSesion) {
   cerrarSesion.addEventListener("click", async () => {
@@ -247,4 +244,3 @@ if (cerrarSesion) {
     window.location.href = "login.html";
   });
 }
-});
