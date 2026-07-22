@@ -41,6 +41,10 @@ const banner = document.getElementById("banner");
 const previewBanner = document.getElementById("previewBanner");
 const subirBanner = document.getElementById("subirBanner");
 const estadoBanner = document.getElementById("estadoBanner");
+const logo = document.getElementById("logo");
+const previewLogo = document.getElementById("previewLogo");
+const subirLogo = document.getElementById("subirLogo");
+const estadoLogo = document.getElementById("estadoLogo");
 function actualizarVista() {
 
     previewTitulo.textContent =
@@ -218,4 +222,15 @@ subirBanner.addEventListener("click", async (e) => {
     }
 
 });
+logo.addEventListener("change", (e) => {
+    const archivo = e.target.files[0];
+    if (!archivo) return;
 
+    const lector = new FileReader();
+
+    lector.onload = (evento) => {
+        previewLogo.src = evento.target.result;
+    };
+
+    lector.readAsDataURL(archivo);
+});
