@@ -240,29 +240,50 @@ color:white;
 box-shadow:0 10px 25px rgba(0,0,0,.25);
 
 }
-
+.menu-btn{
+display:none;
+background:none;
+border:none;
+font-size:34px;
+color:#003a8c;
+cursor:pointer;
+}
 @media(max-width:900px){
-
 header{
-
 padding:0 20px;
+}
 
+.menu-btn{
+display:block;
 }
 
 nav{
+display:none;
+position:absolute;
+top:85px;
+left:0;
+width:100%;
+background:#fff;
+flex-direction:column;
+padding:20px;
+box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
 
-gap:15px;
-font-size:14px;
-flex-wrap:wrap;
-justify-content:flex-end;
+nav.activo{
+display:flex;
+}
 
+nav a{
+margin:12px 0;
 }
 
 .hero h1{
-
 font-size:40px;
-
 }
+
+font-size:18px;
+}
+
 
 .hero p{
 
@@ -282,7 +303,9 @@ font-size:18px;
 
 <img src="logo.jpg" class="logo">
 
-<nav>
+<button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+<nav id="menu">
 
 <a href="#inicio">Inicio</a>
 <a href="#funciona">Cómo funciona</a>
@@ -556,6 +579,10 @@ async function cargarAutos() {
 cargarAutos();
 
 </script>
-
+<script>
+function toggleMenu(){
+document.getElementById("menu").classList.toggle("activo");
+}
+</script>
 </body>
 </html>
