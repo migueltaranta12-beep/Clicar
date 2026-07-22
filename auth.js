@@ -1,0 +1,1 @@
+alert("Auth cargado correctamente");
