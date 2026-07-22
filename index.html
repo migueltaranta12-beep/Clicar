@@ -128,9 +128,8 @@ color:#777;
 </footer>
 
 <script type="module">
-    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
 getFirestore,
 collection,
@@ -172,16 +171,7 @@ snapshot.forEach(doc=>{
 
 const auto = doc.data();
 
-const mensaje = encodeURIComponent(
-`Hola, me interesa el ${auto.marca} ${auto.modelo} que vi en CliCar. ¿Sigue disponible?`
-);
-
 contenedor.innerHTML += `
-
-<a
-href="https://wa.me/5492995222215?text=${mensaje}"
-target="_blank"
-style="text-decoration:none;color:inherit;display:block;">
 
 <div class="card">
 
@@ -195,13 +185,9 @@ style="text-decoration:none;color:inherit;display:block;">
 $${Number(auto.precio).toLocaleString("es-AR")}
 </div>
 
-<div class="dato">
-<strong>Año:</strong> ${auto.anio}
-</div>
+<div class="dato"><strong>Año:</strong> ${auto.anio}</div>
 
-<div class="dato">
-<strong>Km:</strong> ${Number(auto.km).toLocaleString("es-AR")}
-</div>
+<div class="dato"><strong>Km:</strong> ${Number(auto.km).toLocaleString("es-AR")}</div>
 
 <div class="descripcion">
 ${auto.descripcion || ""}
@@ -210,8 +196,6 @@ ${auto.descripcion || ""}
 </div>
 
 </div>
-
-</a>
 
 `;
 
@@ -229,7 +213,6 @@ contenedor.innerHTML =
 }
 
 cargarAutos();
-
 </script>
 
 </body>
