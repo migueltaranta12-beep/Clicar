@@ -316,29 +316,39 @@ if (subirBanner) {
     try {
 
       if (!banner.files.length) {
-        alert("Seleccioná una imagen para el banner.");
+        alert("Seleccioná al menos un banner.");
         return;
       }
 
-      estadoBanner.textContent = "Subiendo banner...";
+      if (banner.files.length > 5) {
+        alert("Solo se permiten hasta 5 banners.");
+        return;
+      }
 
-      const url = await subirACloudinary(banner.files[0]);
+      estadoBanner.textContent = "Subiendo banners...";
+
+      const urls = [];
+
+      for (const archivo of banner.files) {
+        const url = await subirACloudinary(archivo);
+        urls.push(url);
+      }
 
       await setDoc(
         doc(db, "configuracion", "principal"),
-        { banner: url },
+        { banners: urls },
         { merge: true }
       );
 
-      previewBanner.src = url;
-      estadoBanner.textContent = "✅ Banner actualizado.";
+      previewBanner.src = urls[0];
+      estadoBanner.textContent = "✅ Banners actualizados.";
       banner.value = "";
 
     } catch (error) {
 
       console.error(error);
       alert(error.message);
-      estadoBanner.textContent = "❌ Error al subir el banner.";
+      estadoBanner.textContent = "❌ Error al subir los banners.";
 
     }
 
