@@ -469,7 +469,7 @@ Brindar una atención personalizada y ofrecer un sistema confiable para que cada
 
 <h3>WhatsApp</h3>
 
-<p>299 522-2215</p>
+<p id="telefonoWeb">Cargando...</p>
 
 <a class="btn"
 href="https://wa.me/5492995222215"
@@ -485,10 +485,7 @@ Enviar mensaje
 
 <h3>Horario de atención</h3>
 
-<p>
-Lunes a Viernes<br>
-9:00 a 18:00 hs
-</p>
+<p id="horarioWeb">Cargando...</p>
 
 </div>
 
@@ -700,8 +697,31 @@ async function cargarLogo(){
     }
 
 }
+async function cargarContenido() {
 
-cargarLogo();
+    try {
+
+        const documento = await getDoc(doc(db, "config", "web"));
+
+        if (!documento.exists()) return;
+
+        const datos = documento.data();
+
+        document.getElementById("telefonoWeb").textContent =
+            datos.whatsapp || "";
+
+        document.getElementById("horarioWeb").textContent =
+            datos.horario || "";
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+    }
+    cargarLogo();
+cargarContenido();
 cargarBanners();
 cargarAutos();
 </script>
