@@ -547,7 +547,7 @@ async function publicarEntregaFuncion() {
       !fechaEntrega.value ||
       !mensajeEntrega.value ||
       !imagenesEntrega.files.length
-      cargarEntregasAdmin();
+      
     ) {
       alert("Completa todos los campos.");
       return;
@@ -585,6 +585,7 @@ async function publicarEntregaFuncion() {
     mensajeEntrega.value = "";
     videoEntrega.value = "";
     imagenesEntrega.value = "";
+    await cargarEntregasAdmin();
 
   } catch (error) {
 
