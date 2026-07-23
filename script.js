@@ -48,6 +48,12 @@ const tituloWeb = document.getElementById("tituloWeb");
 const subtituloWeb = document.getElementById("subtituloWeb");
 const whatsappWeb = document.getElementById("whatsappWeb");
 const horarioWeb = document.getElementById("horarioWeb");
+const quienesTitulo = document.getElementById("quienesTitulo");
+const tarjeta1Titulo = document.getElementById("tarjeta1Titulo");
+const tarjeta1Texto = document.getElementById("tarjeta1Texto");
+const tarjeta2Titulo = document.getElementById("tarjeta2Titulo");
+const tarjeta2Texto = document.getElementById("tarjeta2Texto");
+const contactoTitulo = document.getElementById("contactoTitulo");
 const guardarContenido = document.getElementById("guardarContenido");
 const estadoContenido = document.getElementById("estadoContenido");
 
@@ -223,7 +229,12 @@ async function guardarConfiguracion() {
     if (subtituloWeb) datos.subtitulo = subtituloWeb.value;
     if (whatsappWeb) datos.whatsapp = whatsappWeb.value;
     if (horarioWeb) datos.horario = horarioWeb.value;
-
+if (quienesTitulo) datos.quienesTitulo = quienesTitulo.value;
+if (tarjeta1Titulo) datos.tarjeta1Titulo = tarjeta1Titulo.value;
+if (tarjeta1Texto) datos.tarjeta1Texto = tarjeta1Texto.value;
+if (tarjeta2Titulo) datos.tarjeta2Titulo = tarjeta2Titulo.value;
+if (tarjeta2Texto) datos.tarjeta2Texto = tarjeta2Texto.value;
+if (contactoTitulo) datos.contactoTitulo = contactoTitulo.value;
     if (banner && banner.files.length) {
 
   estadoBanner.textContent = "Subiendo banners...";
@@ -302,7 +313,23 @@ async function cargarConfiguracion() {
     if (subtituloWeb && datos.subtitulo) subtituloWeb.value = datos.subtitulo;
     if (whatsappWeb && datos.whatsapp) whatsappWeb.value = datos.whatsapp;
     if (horarioWeb && datos.horario) horarioWeb.value = datos.horario;
+if (quienesTitulo && datos.quienesTitulo)
+  quienesTitulo.value = datos.quienesTitulo;
 
+if (tarjeta1Titulo && datos.tarjeta1Titulo)
+  tarjeta1Titulo.value = datos.tarjeta1Titulo;
+
+if (tarjeta1Texto && datos.tarjeta1Texto)
+  tarjeta1Texto.value = datos.tarjeta1Texto;
+
+if (tarjeta2Titulo && datos.tarjeta2Titulo)
+  tarjeta2Titulo.value = datos.tarjeta2Titulo;
+
+if (tarjeta2Texto && datos.tarjeta2Texto)
+  tarjeta2Texto.value = datos.tarjeta2Texto;
+
+if (contactoTitulo && datos.contactoTitulo)
+  contactoTitulo.value = datos.contactoTitulo;
     if (previewBanner && datos.banner) {
       previewBanner.src = datos.banner;
     }
