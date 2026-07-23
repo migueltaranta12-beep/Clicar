@@ -330,3 +330,52 @@ console.error(error);
     }
 });
 cargarContenido();
+cargarVehiculos();
+async function cargarVehiculos() {
+
+    const lista = document.getElementById("listaVehiculos");
+
+    lista.innerHTML = "Cargando...";
+
+    const consulta = query(
+        collection(db, "autos"),
+        orderBy("creado", "desc")
+    );
+
+    const snapshot = await getDocs(consulta);
+
+    if (snapshot.empty) {
+        lista.innerHTML = "<p>No hay vehículos publicados.</p>";
+        return;
+    }
+
+    lista.innerHTML = "";
+
+    snapshot.forEach((vehiculo) => {
+
+        const auto = vehiculo.data();
+
+        lista.innerHTML += `
+        <div style="border:1px solid #ddd;padding:15px;border-radius:10px;margin-bottom:15px;">
+            <h3>${auto.marca} ${auto.modelo}</h3>
+            <p><strong>Precio:</strong> $${Number(auto.precio).toLocaleString("es-AR")}</p>
+
+            <button
+                onclick="eliminarVehiculo('${vehiculo.id}')"
+                style="background:#d32f2f;color:#fff;border:none;padding:10px 15px;border-radius:8px;cursor:pointer;">
+                🗑️ Eliminar
+            </button>
+        </div>
+        `;
+    });
+
+}
+window.eliminarVehiculo = async (id) => {
+
+    if (!confirm("¿Eliminar este vehículo?")) return;
+
+    await deleteDoc(doc(db, "autos", id));
+
+    cargarVehiculos();
+
+};
