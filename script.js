@@ -339,10 +339,8 @@ async function cargarVehiculos() {
 
     try {
 
-        const consulta = query(
-            collection(db, "autos"),
-            orderBy("creado", "desc")
-        );
+        const consulta = collection(db, "autos");
+        
 
         let snapshot;
 
