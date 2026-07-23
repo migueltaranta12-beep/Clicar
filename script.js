@@ -320,7 +320,8 @@ guardarContenido.addEventListener("click", async (e) => {
         estadoContenido.textContent = "✅ Contenido guardado correctamente.";
 
     } catch (error) {
-        console.error(error);
+        alert(error.message);
+console.error(error);
         estadoContenido.textContent = "❌ Error al guardar.";
     }
 });
