@@ -518,7 +518,9 @@ getFirestore,
 collection,
 getDocs,
 query,
-orderBy
+orderBy,
+doc,
+getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 import { firebaseConfig } from "./firebase.js";
@@ -677,7 +679,28 @@ contenedor.innerHTML=`
 }
 
 }
+async function cargarLogo(){
+cargarLogo();
+cargarBanners();
+cargarAutos();
 
+        const logo=document.getElementById("logoWeb");
+
+        const documento=await getDoc(doc(db,"config","logo"));
+
+        if(documento.exists()){
+
+            logo.src=documento.data().imagen;
+
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+}
 cargarBanners();
 cargarAutos();
 
