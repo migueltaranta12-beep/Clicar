@@ -225,10 +225,40 @@ async function guardarConfiguracion() {
     if (horarioWeb) datos.horario = horarioWeb.value;
 
     if (banner && banner.files.length) {
-      estadoBanner.textContent = "Subiendo banner...";
-      datos.banner = await subirACloudinary(banner.files[0]);
+
+  estadoBanner.textContent = "Subiendo banners...";
+
+  const referencia = doc(db, "configuracion", "principal");
+
+  const documento = await getDoc(referencia);
+
+  let banners = [];
+
+  if (documento.exists()) {
+
+    const datosGuardados = documento.data();
+
+    if (Array.isArray(datosGuardados.banners)) {
+      banners = [...datosGuardados.banners];
     }
 
+  }
+
+  for (const archivo of banner.files) {
+
+    if (banners.length >= 5) {
+      break;
+    }
+
+    const url = await subirACloudinary(archivo);
+
+    banners.push(url);
+
+  }
+
+  datos.banners = banners;
+
+    }
     if (logo && logo.files.length) {
       estadoLogo.textContent = "Subiendo logo...";
       datos.logo = await subirACloudinary(logo.files[0]);
