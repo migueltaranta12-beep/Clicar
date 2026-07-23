@@ -633,6 +633,20 @@ async function cargarEntregas() {
 
                 <p>${entrega.mensaje}</p>
 
+${
+  entrega.video
+    ? `
+<a
+href="${entrega.video}"
+target="_blank"
+class="btn"
+style="margin-top:15px;display:inline-block;">
+▶ Ver video
+</a>
+`
+    : ""
+}
+
             </div>
 
         </div>`;
