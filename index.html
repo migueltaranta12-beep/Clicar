@@ -528,67 +528,35 @@ const db = getFirestore(app);
 /* ===========================
    BANNERS
 =========================== */
+async function cargarBanners() {
 
-async function cargarBanners(){
+    try {
 
-const slider=document.getElementById("bannerSlider");
+        const documento = await getDoc(
+            doc(db, "configuracion", "principal")
+        );
 
-try{
+        if (!documento.exists()) return;
 
-const snapshot=await getDocs(collection(db,"banners"));
+        const datos = documento.data();
 
-slider.innerHTML="";
+        if (!datos.banner) return;
 
-let primero=true;
+        document.getElementById("bannerSlider").innerHTML = `
+            <div class="banner-slide activo"
+                 style="background-image:
+                 linear-gradient(rgba(0,37,92,.55),rgba(0,37,92,.55)),
+                 url('${datos.banner}')">
+            </div>
+        `;
 
-snapshot.forEach(doc=>{
+    } catch (error) {
 
-const data=doc.data();
+        console.error(error);
 
-if(!data.imagen) return;
+    }
 
-slider.innerHTML+=`
-<div class="banner-slide ${primero?'activo':''}"
-style="background-image:
-linear-gradient(rgba(0,37,92,.55),rgba(0,37,92,.55)),
-url('${data.imagen}')">
-</div>
-`;
-
-primero=false;
-
-});
-
-const slides=document.querySelectorAll(".banner-slide");
-
-let actual=0;
-
-if(slides.length>1){
-
-setInterval(()=>{
-
-slides[actual].classList.remove("activo");
-
-actual++;
-
-if(actual>=slides.length){
-actual=0;
-}
-
-slides[actual].classList.add("activo");
-
-},4000);
-
-}
-
-}catch(e){
-
-console.error(e);
-
-}
-
-}
-
+    }
 /* ===========================
    AUTOS
 =========================== */
@@ -602,8 +570,8 @@ contenedor.innerHTML="";
 try{
 
 const consulta=query(
-collection(db,"autos"),
-orderBy("creado","desc")
+collection(db,"vehiculos")
+orderBy("fecha","desc")
 );
 
 const snapshot=await getDocs(consulta);
@@ -676,53 +644,63 @@ contenedor.innerHTML=`
 }
 
 }
-async function cargarLogo(){
-
-    try{
-
-        const logo = document.getElementById("logoWeb");
-
-        const documento = await getDoc(doc(db,"config","logo"));
-
-        if(documento.exists()){
-
-            logo.src = documento.data().imagen;
-
-        }
-
-    }catch(error){
-
-        console.error(error);
-
-    }
-
-}
-async function cargarContenido() {
+async function cargarLogo() {
 
     try {
 
-        const documento = await getDoc(doc(db, "config", "web"));
+        const documento = await getDoc(
+            doc(db, "configuracion", "principal")
+        );
 
         if (!documento.exists()) return;
 
         const datos = documento.data();
 
-        document.getElementById("telefonoWeb").textContent =
-            datos.whatsapp || "";
-
-        document.getElementById("horarioWeb").textContent =
-            datos.horario || "";
-      document.getElementById("tituloHero").textContent =
-    datos.titulo || "";
-
-document.getElementById("subtituloHero").textContent =
-    datos.subtitulo || "";
+        if (datos.logo) {
+            document.getElementById("logoWeb").src = datos.logo;
+        }
 
     } catch (error) {
 
         console.error(error);
 
     }
+
+    async function cargarContenido() {
+
+    try {
+
+        const documento = await getDoc(
+            doc(db, "configuracion", "principal")
+        );
+
+        if (!documento.exists()) return;
+
+        const datos = documento.data();
+
+        if (datos.whatsapp) {
+            document.getElementById("telefonoWeb").textContent = datos.whatsapp;
+        }
+
+        if (datos.horario) {
+            document.getElementById("horarioWeb").textContent = datos.horario;
+        }
+
+        if (datos.titulo) {
+            document.getElementById("tituloHero").textContent = datos.titulo;
+        }
+
+        if (datos.subtitulo) {
+            document.getElementById("subtituloHero").textContent = datos.subtitulo;
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+  }
 
     }
     cargarLogo();
