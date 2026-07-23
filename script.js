@@ -301,6 +301,7 @@ async function guardarConfiguracion() {
     if (subtituloWeb) datos.subtitulo = subtituloWeb.value;
     if (whatsappWeb) datos.whatsapp = whatsappWeb.value;
     if (horarioWeb) datos.horario = horarioWeb.value;
+    if (emailWeb) datos.email = emailWeb.value;
 if (quienesTitulo) datos.quienesTitulo = quienesTitulo.value;
 if (tarjeta1Titulo) datos.tarjeta1Titulo = tarjeta1Titulo.value;
 if (tarjeta1Texto) datos.tarjeta1Texto = tarjeta1Texto.value;
