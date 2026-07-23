@@ -396,13 +396,3 @@ window.eliminarVehiculo = async (id) => {
 
     cargarVehiculos();
 
-};
-window.eliminarVehiculo = async (id) => {
-
-    if (!confirm("¿Eliminar este vehículo?")) return;
-
-    await deleteDoc(doc(db, "autos", id));
-
-    cargarVehiculos();
-
-};
