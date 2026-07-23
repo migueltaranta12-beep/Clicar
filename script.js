@@ -61,6 +61,7 @@ const modeloEntrega = document.getElementById("modeloEntrega");
 const clienteEntrega = document.getElementById("clienteEntrega");
 const fechaEntrega = document.getElementById("fechaEntrega");
 const mensajeEntrega = document.getElementById("mensajeEntrega");
+const videoEntrega = document.getElementById("videoEntrega");
 const imagenesEntrega = document.getElementById("imagenesEntrega");
 
 const publicarEntrega = document.getElementById("publicarEntrega");
@@ -503,15 +504,15 @@ async function publicarEntregaFuncion() {
     }
 
     await addDoc(collection(db, "entregas"), {
-      marca: marcaEntrega.value,
-      modelo: modeloEntrega.value,
-      cliente: clienteEntrega.value,
-      fecha: fechaEntrega.value,
-      mensaje: mensajeEntrega.value,
-      imagenes,
-      creado: Date.now()
-    });
-
+  marca: marcaEntrega.value,
+  modelo: modeloEntrega.value,
+  cliente: clienteEntrega.value,
+  fecha: fechaEntrega.value,
+  mensaje: mensajeEntrega.value,
+  video: videoEntrega.value,
+  imagenes,
+  creado: Date.now()
+});
     estadoEntrega.textContent = "✅ Entrega publicada.";
 
     marcaEntrega.value = "";
@@ -519,6 +520,7 @@ async function publicarEntregaFuncion() {
     clienteEntrega.value = "";
     fechaEntrega.value = "";
     mensajeEntrega.value = "";
+    videoEntrega.value = "";
     imagenesEntrega.value = "";
 
   } catch (error) {
