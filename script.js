@@ -473,3 +473,63 @@ if (subirLogo) {
   });
 
   }
+async function publicarEntregaFuncion() {
+
+  try {
+
+    if (
+      !marcaEntrega.value ||
+      !modeloEntrega.value ||
+      !clienteEntrega.value ||
+      !fechaEntrega.value ||
+      !mensajeEntrega.value ||
+      !imagenesEntrega.files.length
+    ) {
+      alert("Completa todos los campos.");
+      return;
+    }
+
+    estadoEntrega.textContent = "Subiendo entrega...";
+
+    const imagenes = [];
+
+    for (const archivo of imagenesEntrega.files) {
+
+      if (imagenes.length >= 5) break;
+
+      const url = await subirACloudinary(archivo);
+      imagenes.push(url);
+
+    }
+
+    await addDoc(collection(db, "entregas"), {
+      marca: marcaEntrega.value,
+      modelo: modeloEntrega.value,
+      cliente: clienteEntrega.value,
+      fecha: fechaEntrega.value,
+      mensaje: mensajeEntrega.value,
+      imagenes,
+      creado: Date.now()
+    });
+
+    estadoEntrega.textContent = "✅ Entrega publicada.";
+
+    marcaEntrega.value = "";
+    modeloEntrega.value = "";
+    clienteEntrega.value = "";
+    fechaEntrega.value = "";
+    mensajeEntrega.value = "";
+    imagenesEntrega.value = "";
+
+  } catch (error) {
+
+    console.error(error);
+    estadoEntrega.textContent = "❌ Error al publicar.";
+
+  }
+
+}
+
+if (publicarEntrega) {
+  publicarEntrega.addEventListener("click", publicarEntregaFuncion);
+}
