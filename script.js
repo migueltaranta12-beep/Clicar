@@ -327,18 +327,34 @@ if (subirBanner) {
 
       estadoBanner.textContent = "Subiendo banners...";
 
-      const urls = [];
+      const referencia = doc(db, "configuracion", "principal");
 
-      for (const archivo of banner.files) {
-        const url = await subirACloudinary(archivo);
-        urls.push(url);
-      }
+const documento = await getDoc(referencia);
 
-      await setDoc(
-        doc(db, "configuracion", "principal"),
-        { banners: urls },
-        { merge: true }
-      );
+let urls = [];
+
+if (documento.exists()) {
+  const datos = documento.data();
+  if (datos.banners) {
+    urls = [...datos.banners];
+  }
+}
+
+for (const archivo of banner.files) {
+
+  if (urls.length >= 5) break;
+
+  const url = await subirACloudinary(archivo);
+
+  urls.push(url);
+
+}
+
+await setDoc(
+  referencia,
+  { banners: urls },
+  { merge: true }
+);
 
       previewBanner.src = urls[0];
       estadoBanner.textContent = "✅ Banners actualizados.";
