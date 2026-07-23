@@ -56,7 +56,15 @@ const tarjeta2Texto = document.getElementById("tarjeta2Texto");
 const contactoTitulo = document.getElementById("contactoTitulo");
 const guardarContenido = document.getElementById("guardarContenido");
 const estadoContenido = document.getElementById("estadoContenido");
+const marcaEntrega = document.getElementById("marcaEntrega");
+const modeloEntrega = document.getElementById("modeloEntrega");
+const clienteEntrega = document.getElementById("clienteEntrega");
+const fechaEntrega = document.getElementById("fechaEntrega");
+const mensajeEntrega = document.getElementById("mensajeEntrega");
+const imagenesEntrega = document.getElementById("imagenesEntrega");
 
+const publicarEntrega = document.getElementById("publicarEntrega");
+const estadoEntrega = document.getElementById("estadoEntrega");
 const cerrarSesion = document.getElementById("cerrarSesion");
 const CLOUD_NAME = "zpbpygfg";
 const UPLOAD_PRESET = "Clicarautos";
