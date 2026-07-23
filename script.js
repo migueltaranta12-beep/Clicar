@@ -547,6 +547,7 @@ async function publicarEntregaFuncion() {
       !fechaEntrega.value ||
       !mensajeEntrega.value ||
       !imagenesEntrega.files.length
+      cargarEntregasAdmin();
     ) {
       alert("Completa todos los campos.");
       return;
