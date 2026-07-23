@@ -386,6 +386,8 @@ async function cargarConfiguracion() {
     if (subtituloWeb && datos.subtitulo) subtituloWeb.value = datos.subtitulo;
     if (whatsappWeb && datos.whatsapp) whatsappWeb.value = datos.whatsapp;
     if (horarioWeb && datos.horario) horarioWeb.value = datos.horario;
+    if (emailWeb && datos.email)
+
 if (quienesTitulo && datos.quienesTitulo)
   quienesTitulo.value = datos.quienesTitulo;
 
