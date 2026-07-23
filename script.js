@@ -369,6 +369,7 @@ if (subirLogo) {
 
       previewLogo.src = url;
       estadoLogo.textContent = "✅ Logo actualizado.";
+      logo.value = "";
 
     } catch (error) {
 
