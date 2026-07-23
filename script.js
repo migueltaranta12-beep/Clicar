@@ -255,7 +255,15 @@ async function cargarEntregasAdmin() {
     tarjeta.innerHTML = `
       <img src="${entrega.imagenes[0]}" style="width:180px;border-radius:10px;">
       <h3>${entrega.marca} ${entrega.modelo}</h3>
-      <p>Cliente: ${entrega.cliente}</p>
+      <p><b>Cliente:</b> ${entrega.cliente}</p>
+
+<p>${entrega.mensaje || ""}</p>
+
+${
+  entrega.video
+    ? `<a href="${entrega.video}" target="_blank">🎥 Ver video</a>`
+    : ""
+}
 
       <button class="eliminarEntrega" data-id="${documento.id}">
         🗑 Eliminar
