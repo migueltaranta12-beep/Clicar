@@ -343,9 +343,9 @@ font-size:18px;
 
 <div class="hero-content">
 
-<h1>Tu próximo vehículo comienza en CliCar</h1>
+<h1 id="tituloHero">Tu próximo vehículo comienza en CliCar</h1>
 
-<p>
+<p id="subtituloHero">
 Accedé al sistema Llave por Llave con asesoramiento personalizado, cuotas y acompañamiento durante todo el proceso.
 </p>
 
@@ -712,6 +712,11 @@ async function cargarContenido() {
 
         document.getElementById("horarioWeb").textContent =
             datos.horario || "";
+      document.getElementById("tituloHero").textContent =
+    datos.titulo || "";
+
+document.getElementById("subtituloHero").textContent =
+    datos.subtitulo || "";
 
     } catch (error) {
 
