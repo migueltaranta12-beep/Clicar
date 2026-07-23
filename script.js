@@ -48,6 +48,7 @@ const tituloWeb = document.getElementById("tituloWeb");
 const subtituloWeb = document.getElementById("subtituloWeb");
 const whatsappWeb = document.getElementById("whatsappWeb");
 const horarioWeb = document.getElementById("horarioWeb");
+const emailWeb = document.getElementById("emailWeb");
 const quienesTitulo = document.getElementById("quienesTitulo");
 const tarjeta1Titulo = document.getElementById("tarjeta1Titulo");
 const tarjeta1Texto = document.getElementById("tarjeta1Texto");
