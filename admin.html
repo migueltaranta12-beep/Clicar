@@ -272,6 +272,35 @@ id="guardarContenido">
 </div>
 
   </section>
+  <section class="card">
+
+<h2>🚗 Publicar entrega</h2>
+
+<label>Marca</label>
+<input type="text" id="marcaEntrega">
+
+<label>Modelo</label>
+<input type="text" id="modeloEntrega">
+
+<label>Cliente</label>
+<input type="text" id="clienteEntrega">
+
+<label>Fecha</label>
+<input type="date" id="fechaEntrega">
+
+<label>Mensaje</label>
+<textarea id="mensajeEntrega" rows="4"></textarea>
+
+<label>Fotos (hasta 5)</label>
+<input type="file" id="imagenesEntrega" accept="image/*" multiple>
+
+<button type="button" id="publicarEntrega">
+🚗 Publicar Entrega
+</button>
+
+<p id="estadoEntrega"></p>
+
+  </section>
 </main>
 
 <script type="module" src="auth.js"></script>
