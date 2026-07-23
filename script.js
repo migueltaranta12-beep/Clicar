@@ -304,6 +304,71 @@ if (cerrarSesion) {
       alert("No se pudo cerrar la sesión.");
 
     }
+    if (subirBanner) {
+
+  subirBanner.addEventListener("click", async () => {
+
+    try {
+
+      if (!banner.files.length) {
+        alert("Seleccioná una imagen para el banner.");
+        return;
+      }
+
+      estadoBanner.textContent = "Subiendo banner...";
+
+      const url = await subirACloudinary(banner.files[0]);
+
+      await setDoc(
+        doc(db, "configuracion", "principal"),
+        { banner: url },
+        { merge: true }
+      );
+
+      previewBanner.src = url;
+      estadoBanner.textContent = "✅ Banner actualizado.";
+
+    } catch (error) {
+      console.error(error);
+      estadoBanner.textContent = "❌ Error al subir el banner.";
+    }
+
+  });
+
+}
+
+if (subirLogo) {
+
+  subirLogo.addEventListener("click", async () => {
+
+    try {
+
+      if (!logo.files.length) {
+        alert("Seleccioná un logo.");
+        return;
+      }
+
+      estadoLogo.textContent = "Subiendo logo...";
+
+      const url = await subirACloudinary(logo.files[0]);
+
+      await setDoc(
+        doc(db, "configuracion", "principal"),
+        { logo: url },
+        { merge: true }
+      );
+
+      previewLogo.src = url;
+      estadoLogo.textContent = "✅ Logo actualizado.";
+
+    } catch (error) {
+      console.error(error);
+      estadoLogo.textContent = "❌ Error al subir el logo.";
+    }
+
+  });
+
+}
 
   });
 
