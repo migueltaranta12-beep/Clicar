@@ -489,7 +489,31 @@ async function cargarConfiguracion() {
         }
 
         if (datos.horario) {
-            document.getElementById("horarioWeb").textContent = datos.horario;
+            document.getElementById("horarioWeb").textContent = datos.horario; 
+        }
+            if (datos.quienesTitulo) {
+    document.getElementById("quienesTituloWeb").textContent = datos.quienesTitulo;
+}
+
+if (datos.tarjeta1Titulo) {
+    document.getElementById("tarjeta1TituloWeb").textContent = datos.tarjeta1Titulo;
+}
+
+if (datos.tarjeta1Texto) {
+    document.getElementById("tarjeta1TextoWeb").textContent = datos.tarjeta1Texto;
+}
+
+if (datos.tarjeta2Titulo) {
+    document.getElementById("tarjeta2TituloWeb").textContent = datos.tarjeta2Titulo;
+}
+
+if (datos.tarjeta2Texto) {
+    document.getElementById("tarjeta2TextoWeb").textContent = datos.tarjeta2Texto;
+}
+
+if (datos.contactoTitulo) {
+    document.getElementById("contactoTituloWeb").textContent = datos.contactoTitulo;
+    }
         }
 
     } catch(error){
