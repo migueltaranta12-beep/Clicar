@@ -47,6 +47,12 @@ const previewLogo = document.getElementById("previewLogo");
 const subirLogo = document.getElementById("subirLogo");
 const cerrarSesion = document.getElementById("cerrarSesion");
 const estadoLogo = document.getElementById("estadoLogo");
+const tituloWeb = document.getElementById("tituloWeb");
+const subtituloWeb = document.getElementById("subtituloWeb");
+const whatsappWeb = document.getElementById("whatsappWeb");
+const horarioWeb = document.getElementById("horarioWeb");
+const guardarContenido = document.getElementById("guardarContenido");
+const estadoContenido = document.getElementById("estadoContenido");
 function actualizarVista() {
 
     previewTitulo.textContent =
@@ -274,3 +280,24 @@ if (cerrarSesion) {
     window.location.href = "login.html";
   });
 }
+guardarContenido.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    estadoContenido.textContent = "💾 Guardando...";
+
+    try {
+
+        await setDoc(doc(db, "config", "web"), {
+            titulo: tituloweb.value,
+            subtitulo: subtituloweb.value,
+            whatsapp: whatsappWeb.value,
+            horario: horarioWeb.value
+        });
+
+        estadoContenido.textContent = "✅ Contenido guardado correctamente.";
+
+    } catch (error) {
+        console.error(error);
+        estadoContenido.textContent = "❌ Error al guardar.";
+    }
+});
