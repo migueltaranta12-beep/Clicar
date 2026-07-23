@@ -431,14 +431,36 @@ async function cargarConfiguracion() {
             document.getElementById("logoWeb").src = datos.logo;
         }
 
-        if (datos.banner) {
+        if (datos.banners && datos.banners.length) {
 
-            document.getElementById("bannerSlider").innerHTML = `
-            <div class="banner-slide activo"
-            style="background-image:
-            linear-gradient(rgba(0,37,92,.55),rgba(0,37,92,.55)),
-            url('${datos.banner}')">
-            </div>`;
+    const slider = document.getElementById("bannerSlider");
+
+    slider.innerHTML = "";
+
+    datos.banners.forEach((url, i) => {
+
+        slider.innerHTML += `
+        <div class="banner-slide ${i === 0 ? "activo" : ""}"
+        style="background-image:
+        linear-gradient(rgba(0,37,92,.55),rgba(0,37,92,.55)),
+        url('${url}')">
+        </div>`;
+
+    });
+
+    const slides = document.querySelectorAll(".banner-slide");
+
+    let actual = 0;
+
+    setInterval(() => {
+
+        slides[actual].classList.remove("activo");
+
+        actual = (actual + 1) % slides.length;
+
+        slides[actual].classList.add("activo");
+
+    }, 4000);
 
         }
 
