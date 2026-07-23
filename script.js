@@ -1,4 +1,4 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { app, auth, firebaseConfig } from "./firebase.js";
 
 import {
 getFirestore,
@@ -15,9 +15,8 @@ deleteDoc
 
 import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-import { firebaseConfig, auth } from "./firebase.js";
 
-const app = initializeApp(firebaseConfig);
+
 const db = getFirestore(app);
 const marca = document.getElementById("marca");
 const modelo = document.getElementById("modelo");
