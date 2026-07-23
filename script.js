@@ -1,396 +1,186 @@
-import { firebaseConfig, cloudinaryConfig } from "./firebase.js";
+!precio.value ||
+!km.value ||
+!imagen.files.length
+) {
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {
-getFirestore,
-collection,
-addDoc,
-doc,
-setDoc,
-getDoc,
-getDocs,
-query,
-orderBy,
-deleteDoc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+estado.textContent = "⚠️ Completá todos los campos.";    
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    window.location.href = "login.html";
-  }
-});
-const marca = document.getElementById("marca");
-const modelo = document.getElementById("modelo");
-const anio = document.getElementById("anio");
-const precio = document.getElementById("precio");
-const km = document.getElementById("km");
-const descripcion = document.getElementById("descripcion");
-const imagen = document.getElementById("imagen");
-
-const previewImagen = document.getElementById("previewImagen");
-const previewTitulo = document.getElementById("previewTitulo");
-const previewPrecio = document.getElementById("previewPrecio");
-const previewDescripcion = document.getElementById("previewDescripcion");
-
-const publicar = document.getElementById("publicar");
-const estado = document.getElementById("estado");
-const banner = document.getElementById("banner");
-const previewBanner = document.getElementById("previewBanner");
-const subirBanner = document.getElementById("subirBanner");
-const estadoBanner = document.getElementById("estadoBanner");
-const logo = document.getElementById("logo");
-const previewLogo = document.getElementById("previewLogo");
-const subirLogo = document.getElementById("subirLogo");
-const cerrarSesion = document.getElementById("cerrarSesion");
-const estadoLogo = document.getElementById("estadoLogo");
-const tituloweb = document.getElementById("tituloweb");
-const tituloWeb = document.getElementById("tituloWeb");
-const subtituloWeb = document.getElementById("subtituloWeb");
-const whatsappWeb = document.getElementById("whatsappWeb");
-const horarioWeb = document.getElementById("horarioWeb");
-const guardarContenido = document.getElementById("guardarContenido");
-const estadoContenido = document.getElementById("estadoContenido");
-function actualizarVista() {
-
-    previewTitulo.textContent =
-        `${marca.value} ${modelo.value}`.trim() || "Marca Modelo";
-
-    previewPrecio.textContent =
-        precio.value ? `$ ${precio.value}` : "$0";
-
-    previewDescripcion.textContent =
-        descripcion.value || "Sin descripción";
+return;
 
 }
 
-function actualizarImagen(e) {
+estado.textContent = "📤 Subiendo imagen...";
 
-    const archivo = e.target.files[0];
+try {
 
-    if (!archivo) return;
+const urlImagen = await subirImagenCloudinary(imagen.files[0]);    
+      await addDoc(collection(db, "autos"), {    
+    marca: marca.value,    
+    modelo: modelo.value,    
+    anio: Number(anio.value),    
+    precio: Number(precio.value),    
+    km: Number(km.value),    
+    descripcion: descripcion.value,    
+    imagen: urlImagen,    
+    creado: Date.now()    
+});    
 
-    const lector = new FileReader();
+estado.textContent = "✅ Vehículo publicado correctamente.";    
 
-    lector.onload = (evento) => {
+document.getElementById("formAuto").reset();    
 
-        previewImagen.src = evento.target.result;
+previewImagen.src =    
+    "https://placehold.co/700x450?text=Sin+Imagen";    
 
-    };
+previewTitulo.textContent = "Marca Modelo";    
+previewPrecio.textContent = "$0";    
+previewDescripcion.textContent = "Sin descripción";
 
-    lector.readAsDataURL(archivo);
+} catch (error) {
 
-}
+console.error(error);    
 
-marca.addEventListener("input", actualizarVista);
-modelo.addEventListener("input", actualizarVista);
-precio.addEventListener("input", actualizarVista);
-descripcion.addEventListener("input", actualizarVista);
-
-imagen.addEventListener("change", actualizarImagen);
-imagen.addEventListener("change", actualizarImagen);
-
-banner.addEventListener("change", (e) => {
-
-    const archivo = e.target.files[0];
-
-    if (!archivo) return;
-
-    const lector = new FileReader();
-
-    lector.onload = (evento) => {
-        previewBanner.src = evento.target.result;
-    };
-
-    lector.readAsDataURL(archivo);
-
-});
-
-actualizarVista();
-actualizarVista();
-async function subirImagenCloudinary(archivo) {
-
-    const formData = new FormData();
-
-    formData.append("file", archivo);
-    formData.append("upload_preset", cloudinaryConfig.uploadPreset);
-
-    const respuesta = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`,
-        {
-            method: "POST",
-            body: formData
-        }
-    );
-
-    if (!respuesta.ok) {
-        throw new Error("No se pudo subir la imagen.");
-    }
-
-    const datos = await respuesta.json();
-
-    return datos.secure_url;
+estado.textContent =    
+    "❌ Ocurrió un error al publicar el vehículo.";
 
 }
-
-publicar.addEventListener("click", async (e) => {
-
-    e.preventDefault();
-
-    if (
-        !marca.value ||
-        !modelo.value ||
-        !anio.value ||
-        !precio.value ||
-        !km.value ||
-        !imagen.files.length
-    ) {
-
-        estado.textContent = "⚠️ Completá todos los campos.";
-
-        return;
-
-    }
-
-    estado.textContent = "📤 Subiendo imagen...";
-
-    try {
-
-        const urlImagen = await subirImagenCloudinary(imagen.files[0]);
-              await addDoc(collection(db, "autos"), {
-            marca: marca.value,
-            modelo: modelo.value,
-            anio: Number(anio.value),
-            precio: Number(precio.value),
-            km: Number(km.value),
-            descripcion: descripcion.value,
-            imagen: urlImagen,
-            creado: Date.now()
-        });
-
-        estado.textContent = "✅ Vehículo publicado correctamente.";
-
-        document.getElementById("formAuto").reset();
-
-        previewImagen.src =
-            "https://placehold.co/700x450?text=Sin+Imagen";
-
-        previewTitulo.textContent = "Marca Modelo";
-        previewPrecio.textContent = "$0";
-        previewDescripcion.textContent = "Sin descripción";
-
-    } catch (error) {
-
-        console.error(error);
-
-        estado.textContent =
-            "❌ Ocurrió un error al publicar el vehículo.";
-
-    }
 
 });
 subirBanner.addEventListener("click", async (e) => {
 
-    e.preventDefault();
+e.preventDefault();
 
-    if (!banner.files.length) {
-        estadoBanner.textContent = "⚠️ Seleccioná una imagen.";
-        return;
-    }
+if (!banner.files.length) {
+estadoBanner.textContent = "⚠️ Seleccioná una imagen.";
+return;
+}
 
-    estadoBanner.textContent = "📤 Subiendo banner...";
+estadoBanner.textContent = "📤 Subiendo banner...";
 
-    try {
+try {
 
-        const urlBanner = await subirImagenCloudinary(banner.files[0]);
+const urlBanner = await subirImagenCloudinary(banner.files[0]);    
 
-        const id = "banner" + Date.now();
+const id = "banner" + Date.now();    
 
-        await setDoc(doc(db, "banners", id), {
-            imagen: urlBanner,
-            creado: Date.now()
-        });
+await setDoc(doc(db, "banners", id), {    
+    imagen: urlBanner,    
+    creado: Date.now()    
+});    
 
-        estadoBanner.textContent = "✅ Banner subido correctamente.";
+estadoBanner.textContent = "✅ Banner subido correctamente.";    
 
-        document.getElementById("formBanner").reset();
+document.getElementById("formBanner").reset();    
 
-        previewBanner.src =
-        "https://placehold.co/1200x400?text=Banner";
+previewBanner.src =    
+"https://placehold.co/1200x400?text=Banner";
 
-    } catch (error) {
+} catch (error) {
 
-        console.error(error);
+console.error(error);    
 
-        estadoBanner.textContent =
-        "❌ Error al subir el banner.";
+estadoBanner.textContent =    
+"❌ Error al subir el banner.";
 
-    }
+}
 
 });
 subirLogo.addEventListener("click", async (e) => {
-    e.preventDefault();
+e.preventDefault();
 
-    if (!logo.files.length) {
-        estadoLogo.textContent = "⚠️ Seleccioná un logo.";
-        return;
-    }
+if (!logo.files.length) {
+estadoLogo.textContent = "⚠️ Seleccioná un logo.";
+return;
+}
 
-    estadoLogo.textContent = "📤 Subiendo logo...";
+estadoLogo.textContent = "📤 Subiendo logo...";
 
-    try {
-        const urlLogo = await subirImagenCloudinary(logo.files[0]);
+try {
+const urlLogo = await subirImagenCloudinary(logo.files[0]);
 
-        await setDoc(doc(db, "config", "logo"), {
-            imagen: urlLogo,
-            creado: Date.now()
-        });
+await setDoc(doc(db, "config", "logo"), {    
+    imagen: urlLogo,    
+    creado: Date.now()    
+});    
 
-        estadoLogo.textContent = "✅ Logo subido correctamente.";
+estadoLogo.textContent = "✅ Logo subido correctamente.";    
 
-        document.getElementById("formLogo").reset();
+document.getElementById("formLogo").reset();    
 
-        previewLogo.src = urlLogo;
+previewLogo.src = urlLogo;
 
-    } catch (error) {
-        console.error(error);
+} catch (error) {
+console.error(error);
 
-        estadoLogo.textContent = "❌ Error al subir el logo.";
-    }
+estadoLogo.textContent = "❌ Error al subir el logo.";
+
+}
+
 });
 logo.addEventListener("change", (e) => {
-    const archivo = e.target.files[0];
-    if (!archivo) return;
+const archivo = e.target.files[0];
+if (!archivo) return;
 
-    const lector = new FileReader();
+const lector = new FileReader();
 
-    lector.onload = (evento) => {
-        previewLogo.src = evento.target.result;
-    };
+lector.onload = (evento) => {
+previewLogo.src = evento.target.result;
+};
 
-    lector.readAsDataURL(archivo);
+lector.readAsDataURL(archivo);
+
 });
 
-
 if (cerrarSesion) {
-  cerrarSesion.addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.href = "login.html";
-  });
-  async function cargarContenido() {
+cerrarSesion.addEventListener("click", async () => {
+await signOut(auth);
+window.location.href = "login.html";
+});
+async function cargarContenido() {
 
-    try {
+try {
 
-        const documento = await getDoc(doc(db, "config", "web"));
+const documento = await getDoc(doc(db, "config", "web"));    
 
-        if (!documento.exists()) return;
+if (!documento.exists()) return;    
 
-        const datos = documento.data();
+const datos = documento.data();    
 
-        tituloWeb.value = datos.titulo || "";
+tituloWeb.value = datos.titulo || "";
+
 subtituloWeb.value = datos.subtitulo || "";
 whatsappWeb.value = datos.whatsapp || "";
 horarioWeb.value = datos.horario || "";
-    } catch (error) {
+} catch (error) {
 
-        console.error(error);
+console.error(error);
 
-    }
+}
 
-  }
+}
 }
 guardarContenido.addEventListener("click", async (e) => {
-    e.preventDefault();
+e.preventDefault();
 
-    estadoContenido.textContent = "💾 Guardando...";
-
-    try {
-
-        await setDoc(doc(db, "config", "web"), {
-            titulo: tituloWeb.value,
-subtitulo: subtituloWeb.value,
-            whatsapp: whatsappWeb.value,
-            horario: horarioWeb.value
-        });
-
-        estadoContenido.textContent = "✅ Contenido guardado correctamente.";
-
-    } catch (error) {
-        alert(error.message);
-console.error(error);
-        estadoContenido.textContent = "❌ Error al guardar.";
-    }
-});
-cargarContenido();
-cargarVehiculos();
-async function cargarVehiculos() {
-
-    const lista = document.getElementById("listaVehiculos");
-
-    lista.innerHTML = "Cargando vehículos...";
-
-    try {
-
-        const consulta = collection(db, "autos");
-        
-
-        let snapshot;
+estadoContenido.textContent = "💾 Guardando...";
 
 try {
-    snapshot = await getDocs(consulta);
+
+await setDoc(doc(db, "config", "web"), {    
+    titulo: tituloWeb.value,
+
+subtitulo: subtituloWeb.value,
+whatsapp: whatsappWeb.value,
+horario: horarioWeb.value
+});
+
+estadoContenido.textContent = "✅ Contenido guardado correctamente.";
+
 } catch (error) {
-    lista.innerHTML = "❌ " + error.message;
-    return;
+alert(error.message);
+
+console.error(error);
+estadoContenido.textContent = "❌ Error al guardar.";
 }
-
-        if (snapshot.empty) {
-            lista.innerHTML = "<p>No hay vehículos publicados.</p>";
-            return;
-        }
-
-        lista.innerHTML = "";
-
-        snapshot.forEach((vehiculo) => {
-
-            const auto = vehiculo.data();
-
-            lista.innerHTML += `
-            <div style="border:1px solid #ddd;padding:15px;border-radius:10px;margin-bottom:15px;">
-                <h3>${auto.marca} ${auto.modelo}</h3>
-                <p><strong>Precio:</strong> $${Number(auto.precio).toLocaleString("es-AR")}</p>
-
-                <button
-                    onclick="eliminarVehiculo('${vehiculo.id}')"
-                    style="background:#d32f2f;color:#fff;border:none;padding:10px 15px;border-radius:8px;cursor:pointer;">
-                    🗑️ Eliminar
-                </button>
-            </div>
-            `;
-        });
-
-    } catch (error) {
-
-        console.error(error);
-
-        lista.innerHTML = "❌ " + error.message;
-
-    }
-
-}
-
-window.eliminarVehiculo = async (id) => {
-
-    if (!confirm("¿Eliminar este vehículo?")) return;
-
-    await deleteDoc(doc(db, "autos", id));
-
-    cargarVehiculos();
-
+});
+cargarContenido();
