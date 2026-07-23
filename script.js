@@ -66,6 +66,7 @@ const imagenesEntrega = document.getElementById("imagenesEntrega");
 
 const publicarEntrega = document.getElementById("publicarEntrega");
 const estadoEntrega = document.getElementById("estadoEntrega");
+const listaEntregasAdmin = document.getElementById("listaEntregasAdmin");
 const cerrarSesion = document.getElementById("cerrarSesion");
 const CLOUD_NAME = "zpbpygfg";
 const UPLOAD_PRESET = "Clicarautos";
@@ -228,6 +229,59 @@ async function cargarVehiculos() {
 }
 
 cargarVehiculos();
+async function cargarEntregasAdmin() {
+
+  if (!listaEntregasAdmin) return;
+
+  listaEntregasAdmin.innerHTML = "Cargando entregas...";
+
+  const consulta = query(
+    collection(db, "entregas"),
+    orderBy("creado", "desc")
+  );
+
+  const snapshot = await getDocs(consulta);
+
+  listaEntregasAdmin.innerHTML = "";
+
+  snapshot.forEach((documento) => {
+
+    const entrega = documento.data();
+
+    const tarjeta = document.createElement("div");
+
+    tarjeta.className = "vehiculo-admin";
+
+    tarjeta.innerHTML = `
+      <img src="${entrega.imagenes[0]}" style="width:180px;border-radius:10px;">
+      <h3>${entrega.marca} ${entrega.modelo}</h3>
+      <p>Cliente: ${entrega.cliente}</p>
+
+      <button class="eliminarEntrega" data-id="${documento.id}">
+        🗑 Eliminar
+      </button>
+    `;
+
+    listaEntregasAdmin.appendChild(tarjeta);
+
+  });
+
+  document.querySelectorAll(".eliminarEntrega").forEach((boton) => {
+
+    boton.addEventListener("click", async () => {
+
+      if (!confirm("¿Eliminar esta entrega?")) return;
+
+      await deleteDoc(doc(db, "entregas", boton.dataset.id));
+
+      cargarEntregasAdmin();
+
+    });
+
+  });
+
+}
+cargarEntregasAdmin();
 async function guardarConfiguracion() {
 
   try {
