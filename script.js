@@ -147,8 +147,9 @@ async function publicarVehiculo() {
     }
 
   } catch (error) {
-    console.error(error);
-    estado.textContent = "❌ Error al publicar el vehículo.";
+  console.error(error);
+  alert(error.message);
+  estado.textContent = "❌ Error al publicar el vehículo.";
   }
 }
 
