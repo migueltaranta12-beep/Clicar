@@ -304,7 +304,12 @@ if (cerrarSesion) {
       alert("No se pudo cerrar la sesión.");
 
     }
-    if (subirBanner) {
+
+  });
+
+}
+
+if (subirBanner) {
 
   subirBanner.addEventListener("click", async () => {
 
@@ -329,8 +334,11 @@ if (cerrarSesion) {
       estadoBanner.textContent = "✅ Banner actualizado.";
 
     } catch (error) {
+
       console.error(error);
+      alert(error.message);
       estadoBanner.textContent = "❌ Error al subir el banner.";
+
     }
 
   });
@@ -362,14 +370,13 @@ if (subirLogo) {
       estadoLogo.textContent = "✅ Logo actualizado.";
 
     } catch (error) {
+
       console.error(error);
+      alert(error.message);
       estadoLogo.textContent = "❌ Error al subir el logo.";
+
     }
 
   });
 
-}
-
-  });
-
-}
+  }
