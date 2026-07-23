@@ -332,6 +332,7 @@ if (subirBanner) {
 
       previewBanner.src = url;
       estadoBanner.textContent = "✅ Banner actualizado.";
+      banner.value = "";
 
     } catch (error) {
 
