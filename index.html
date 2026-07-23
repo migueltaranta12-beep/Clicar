@@ -588,12 +588,62 @@ if (datos.contactoTitulo) {
 
 };
     
+async function cargarEntregas() {
 
+    let seccion = document.getElementById("entregas");
+
+    if (!seccion) {
+
+        seccion = document.createElement("section");
+        seccion.id = "entregas";
+
+        seccion.innerHTML = `
+        <h2 class="titulo">Entregas Realizadas</h2>
+        <div id="listaEntregas" class="catalogo"></div>`;
+
+        document.querySelector("footer").before(seccion);
+
+    }
+
+    const contenedor = document.getElementById("listaEntregas");
+
+    const consulta = query(
+        collection(db, "entregas"),
+        orderBy("creado", "desc")
+    );
+
+    const snapshot = await getDocs(consulta);
+
+    contenedor.innerHTML = "";
+
+    snapshot.forEach((docu) => {
+
+        const entrega = docu.data();
+
+        contenedor.innerHTML += `
+        <div class="card">
+
+            <img src="${entrega.imagenes[0]}" alt="Entrega">
+
+            <div class="info">
+
+                <h2>${entrega.marca} ${entrega.modelo}</h2>
+
+                <p><b>Cliente:</b> ${entrega.cliente}</p>
+
+                <p>${entrega.mensaje}</p>
+
+            </div>
+
+        </div>`;
+
+    });
+
+    }
 
 await cargarConfiguracion();
-
 await cargarVehiculos();
-
+await cargarEntregas();
 </script>
 
 </body>
