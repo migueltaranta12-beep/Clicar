@@ -344,7 +344,14 @@ async function cargarVehiculos() {
             orderBy("creado", "desc")
         );
 
-        const snapshot = await getDocs(consulta);
+        let snapshot;
+
+try {
+    snapshot = await getDocs(consulta);
+} catch (error) {
+    lista.innerHTML = "❌ " + error.message;
+    return;
+}
 
         if (snapshot.empty) {
             lista.innerHTML = "<p>No hay vehículos publicados.</p>";
