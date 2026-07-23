@@ -335,41 +335,61 @@ async function cargarVehiculos() {
 
     const lista = document.getElementById("listaVehiculos");
 
-    lista.innerHTML = "Cargando...";
+    lista.innerHTML = "Cargando vehículos...";
 
-    const consulta = query(
-        collection(db, "autos"),
-        orderBy("creado", "desc")
-    );
+    try {
 
-    const snapshot = await getDocs(consulta);
+        const consulta = query(
+            collection(db, "autos"),
+            orderBy("creado", "desc")
+        );
 
-    if (snapshot.empty) {
-        lista.innerHTML = "<p>No hay vehículos publicados.</p>";
-        return;
+        const snapshot = await getDocs(consulta);
+
+        if (snapshot.empty) {
+            lista.innerHTML = "<p>No hay vehículos publicados.</p>";
+            return;
+        }
+
+        lista.innerHTML = "";
+
+        snapshot.forEach((vehiculo) => {
+
+            const auto = vehiculo.data();
+
+            lista.innerHTML += `
+            <div style="border:1px solid #ddd;padding:15px;border-radius:10px;margin-bottom:15px;">
+                <h3>${auto.marca} ${auto.modelo}</h3>
+                <p><strong>Precio:</strong> $${Number(auto.precio).toLocaleString("es-AR")}</p>
+
+                <button
+                    onclick="eliminarVehiculo('${vehiculo.id}')"
+                    style="background:#d32f2f;color:#fff;border:none;padding:10px 15px;border-radius:8px;cursor:pointer;">
+                    🗑️ Eliminar
+                </button>
+            </div>
+            `;
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        lista.innerHTML = "❌ " + error.message;
+
     }
 
-    lista.innerHTML = "";
-
-    snapshot.forEach((vehiculo) => {
-
-        const auto = vehiculo.data();
-
-        lista.innerHTML += `
-        <div style="border:1px solid #ddd;padding:15px;border-radius:10px;margin-bottom:15px;">
-            <h3>${auto.marca} ${auto.modelo}</h3>
-            <p><strong>Precio:</strong> $${Number(auto.precio).toLocaleString("es-AR")}</p>
-
-            <button
-                onclick="eliminarVehiculo('${vehiculo.id}')"
-                style="background:#d32f2f;color:#fff;border:none;padding:10px 15px;border-radius:8px;cursor:pointer;">
-                🗑️ Eliminar
-            </button>
-        </div>
-        `;
-    });
-
 }
+
+window.eliminarVehiculo = async (id) => {
+
+    if (!confirm("¿Eliminar este vehículo?")) return;
+
+    await deleteDoc(doc(db, "autos", id));
+
+    cargarVehiculos();
+
+};
 window.eliminarVehiculo = async (id) => {
 
     if (!confirm("¿Eliminar este vehículo?")) return;
