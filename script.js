@@ -11,7 +11,8 @@ getFirestore,
 collection,
 addDoc,
 doc,
-setDoc
+setDoc,
+getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const app = initializeApp(firebaseConfig);
@@ -279,6 +280,28 @@ if (cerrarSesion) {
     await signOut(auth);
     window.location.href = "login.html";
   });
+  async function cargarContenido() {
+
+    try {
+
+        const documento = await getDoc(doc(db, "config", "web"));
+
+        if (!documento.exists()) return;
+
+        const datos = documento.data();
+
+        tituloweb.value = datos.titulo || "";
+        subtituloweb.value = datos.subtitulo || "";
+        whatsappWeb.value = datos.whatsapp || "";
+        horarioWeb.value = datos.horario || "";
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+  }
 }
 guardarContenido.addEventListener("click", async (e) => {
     e.preventDefault();
@@ -301,3 +324,4 @@ guardarContenido.addEventListener("click", async (e) => {
         estadoContenido.textContent = "❌ Error al guardar.";
     }
 });
+cargarContenido();
