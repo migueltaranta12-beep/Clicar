@@ -291,11 +291,10 @@ if (cerrarSesion) {
 
         const datos = documento.data();
 
-        tituloweb.value = datos.titulo || "";
-        subtituloweb.value = datos.subtitulo || "";
-        whatsappWeb.value = datos.whatsapp || "";
-        horarioWeb.value = datos.horario || "";
-
+        tituloWeb.value = datos.titulo || "";
+subtituloWeb.value = datos.subtitulo || "";
+whatsappWeb.value = datos.whatsapp || "";
+horarioWeb.value = datos.horario || "";
     } catch (error) {
 
         console.error(error);
@@ -312,8 +311,8 @@ guardarContenido.addEventListener("click", async (e) => {
     try {
 
         await setDoc(doc(db, "config", "web"), {
-            titulo: tituloweb.value,
-            subtitulo: subtituloweb.value,
+            titulo: tituloWeb.value,
+subtitulo: subtituloWeb.value,
             whatsapp: whatsappWeb.value,
             horario: horarioWeb.value
         });
