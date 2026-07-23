@@ -48,6 +48,7 @@ const previewLogo = document.getElementById("previewLogo");
 const subirLogo = document.getElementById("subirLogo");
 const cerrarSesion = document.getElementById("cerrarSesion");
 const estadoLogo = document.getElementById("estadoLogo");
+const tituloweb = document.getElementById("tituloweb");
 const tituloWeb = document.getElementById("tituloWeb");
 const subtituloWeb = document.getElementById("subtituloWeb");
 const whatsappWeb = document.getElementById("whatsappWeb");
