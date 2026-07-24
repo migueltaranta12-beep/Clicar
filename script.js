@@ -325,6 +325,30 @@ async function cargarBannersAdmin() {
   });
 
 }
+document.addEventListener("click", async (e) => {
+
+  if (!e.target.classList.contains("eliminarBanner")) return;
+
+  const indice = Number(e.target.dataset.index);
+
+  const referencia = doc(db, "configuracion", "principal");
+  const documento = await getDoc(referencia);
+
+  if (!documento.exists()) return;
+
+  const datos = documento.data();
+
+  datos.banners.splice(indice, 1);
+
+  await setDoc(
+    referencia,
+    { banners: datos.banners },
+    { merge: true }
+  );
+
+  cargarBannersAdmin();
+
+});
 async function guardarConfiguracion() {
 
   try {
@@ -454,6 +478,7 @@ if (contactoTitulo && datos.contactoTitulo)
 }
 
 cargarConfiguracion();
+cargarBannersAdmin();
 
 if (cerrarSesion) {
 
