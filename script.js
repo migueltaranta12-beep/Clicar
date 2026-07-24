@@ -38,6 +38,7 @@ const banner = document.getElementById("banner");
 const previewBanner = document.getElementById("previewBanner");
 const subirBanner = document.getElementById("subirBanner");
 const estadoBanner = document.getElementById("estadoBanner");
+const listaBanners = document.getElementById("listaBanners");
 
 const logo = document.getElementById("logo");
 const previewLogo = document.getElementById("previewLogo");
