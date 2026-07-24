@@ -121,6 +121,7 @@ if (logo) {
   });
           }
 async function publicarVehiculo() {
+  alert("Entró a publicarVehiculo");
   try {
 
     if (
