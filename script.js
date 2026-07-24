@@ -550,7 +550,7 @@ await setDoc(
       previewBanner.src = urls[0];
       estadoBanner.textContent = "✅ Banners actualizados.";
       banner.value = "";
-
+await cargarBannersAdmin();
     } catch (error) {
 
       console.error(error);
