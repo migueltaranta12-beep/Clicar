@@ -130,23 +130,37 @@ async function publicarVehiculo() {
       !precio.value ||
       !km.value ||
       !descripcion.value ||
-      !imagen.files.length
+      !(
+    imagen1.files.length ||
+    imagen2.files.length ||
+    imagen3.files.length ||
+    imagen4.files.length
+)
     ) {
       alert("Completa todos los campos.");
       return;
     }
 
     estado.textContent = "Subiendo imagen...";
-if (imagen.files.length > 4) {
-    alert("Solo podés subir hasta 4 fotos.");
-    return;
-}
-
 const imagenes = [];
 
-for (const archivo of imagen.files) {
-    const url = await subirACloudinary(archivo);
-    imagenes.push(url);
+const archivos = [
+    imagen1.files[0],
+    imagen2.files[0],
+    imagen3.files[0],
+    imagen4.files[0]
+];
+
+for (const archivo of archivos) {
+    if (archivo) {
+        const url = await subirACloudinary(archivo);
+        imagenes.push(url);
+    }
+}
+
+if (imagenes.length === 0) {
+    alert("Debés seleccionar al menos una foto.");
+    return;
 }
 
 await addDoc(collection(db, "vehiculos"), {
@@ -168,7 +182,10 @@ await addDoc(collection(db, "vehiculos"), {
     precio.value = "";
     km.value = "";
     descripcion.value = "";
-    imagen.value = "";
+    imagen1.value = "";
+imagen2.value = "";
+imagen3.value = "";
+imagen4.value = "";
 
     previewImagen.src = "";
 
