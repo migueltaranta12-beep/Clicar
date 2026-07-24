@@ -134,20 +134,29 @@ async function publicarVehiculo() {
     }
 
     estado.textContent = "Subiendo imagen...";
+if (imagen.files.length > 4) {
+    alert("Solo podés subir hasta 4 fotos.");
+    return;
+}
 
-    const urlImagen = await subirACloudinary(imagen.files[0]);
+const imagenes = [];
 
-    await addDoc(collection(db, "vehiculos"), {
-      marca: marca.value,
-      modelo: modelo.value,
-      anio: Number(anio.value),
-      precio: Number(precio.value),
-      km: Number(km.value),
-      descripcion: descripcion.value,
-      imagen: urlImagen,
-      fecha: Date.now()
-    });
+for (const archivo of imagen.files) {
+    const url = await subirACloudinary(archivo);
+    imagenes.push(url);
+}
 
+await addDoc(collection(db, "vehiculos"), {
+    marca: marca.value,
+    modelo: modelo.value,
+    anio: Number(anio.value),
+    precio: Number(precio.value),
+    km: Number(km.value),
+    descripcion: descripcion.value,
+    imagen: imagenes[0],   // Compatibilidad con los vehículos actuales
+    imagenes: imagenes,    // Las 4 fotos
+    fecha: Date.now()
+});
     estado.textContent = "✅ Vehículo publicado correctamente.";
 
     marca.value = "";
