@@ -24,7 +24,10 @@ const anio = document.getElementById("anio");
 const precio = document.getElementById("precio");
 const km = document.getElementById("km");
 const descripcion = document.getElementById("descripcion");
-const imagen = document.getElementById("imagen");
+const imagen1 = document.getElementById("imagen1");
+const imagen2 = document.getElementById("imagen2");
+const imagen3 = document.getElementById("imagen3");
+const imagen4 = document.getElementById("imagen4");
 
 const previewImagen = document.getElementById("previewImagen");
 const previewTitulo = document.getElementById("previewTitulo");
