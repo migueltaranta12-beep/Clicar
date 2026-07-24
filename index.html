@@ -356,7 +356,11 @@ Encontrá la mejor alternativa con asesoramiento profesional y seguimiento perma
 <p id="telefonoWeb">
 Cargando...
 </p>
+<h3>Email</h3>
 
+<p id="emailWebMostrar">
+Cargando...
+</p>
 <a
 id="botonWhatsapp2"
 class="btn"
@@ -487,7 +491,9 @@ async function cargarConfiguracion() {
             `https://wa.me/${numero}`;
 
         }
-
+if (datos.email) {
+  document.getElementById("emailWebMostrar").textContent = datos.email;
+    }
         if (datos.horario) {
             document.getElementById("horarioWeb").textContent = datos.horario; 
         }
