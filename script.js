@@ -387,6 +387,7 @@ async function cargarConfiguracion() {
     if (whatsappWeb && datos.whatsapp) whatsappWeb.value = datos.whatsapp;
     if (horarioWeb && datos.horario) horarioWeb.value = datos.horario;
     if (emailWeb && datos.email)
+    emailWeb.value = datos.email;
 
 if (quienesTitulo && datos.quienesTitulo)
   quienesTitulo.value = datos.quienesTitulo;
@@ -405,8 +406,8 @@ if (tarjeta2Texto && datos.tarjeta2Texto)
 
 if (contactoTitulo && datos.contactoTitulo)
   contactoTitulo.value = datos.contactoTitulo;
-    if (previewBanner && datos.banner) {
-      previewBanner.src = datos.banner;
+    if (previewBanner && datos.banners && datos.banners.length) {
+    previewBanner.src = datos.banners[0];
     }
 
     if (previewLogo && datos.logo) {
