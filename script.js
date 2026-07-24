@@ -144,12 +144,12 @@ async function publicarVehiculo() {
     estado.textContent = "Subiendo imagen...";
 const imagenes = [];
 
-const archivos = [
-    imagen1.files[0],
-    imagen2.files[0],
-    imagen3.files[0],
-    imagen4.files[0]
-];
+const archivos = [];
+
+if (imagen1?.files?.length) archivos.push(imagen1.files[0]);
+if (imagen2?.files?.length) archivos.push(imagen2.files[0]);
+if (imagen3?.files?.length) archivos.push(imagen3.files[0]);
+if (imagen4?.files?.length) archivos.push(imagen4.files[0]);
 
 for (const archivo of archivos) {
     if (archivo) {
@@ -474,7 +474,7 @@ async function cargarConfiguracion() {
     if (whatsappWeb && datos.whatsapp) whatsappWeb.value = datos.whatsapp;
     if (horarioWeb && datos.horario) horarioWeb.value = datos.horario;
     if (emailWeb && datos.email)
-
+emailWeb.value = datos.email;
 if (quienesTitulo && datos.quienesTitulo)
   quienesTitulo.value = datos.quienesTitulo;
 
