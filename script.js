@@ -24,10 +24,7 @@ const anio = document.getElementById("anio");
 const precio = document.getElementById("precio");
 const km = document.getElementById("km");
 const descripcion = document.getElementById("descripcion");
-const imagen1 = document.getElementById("imagen1");
-const imagen2 = document.getElementById("imagen2");
-const imagen3 = document.getElementById("imagen3");
-const imagen4 = document.getElementById("imagen4");
+const imagen = document.getElementById("imagen");
 
 const previewImagen = document.getElementById("previewImagen");
 const previewTitulo = document.getElementById("previewTitulo");
@@ -41,7 +38,6 @@ const banner = document.getElementById("banner");
 const previewBanner = document.getElementById("previewBanner");
 const subirBanner = document.getElementById("subirBanner");
 const estadoBanner = document.getElementById("estadoBanner");
-const listaBanners = document.getElementById("listaBanners");
 
 const logo = document.getElementById("logo");
 const previewLogo = document.getElementById("previewLogo");
@@ -97,12 +93,12 @@ async function subirACloudinary(file) {
   return datos.secure_url;
 }
 
-if (imagen1) {
-    imagen1.addEventListener("change", () => {
-        if (imagen1.files.length) {
-            previewImagen.src = URL.createObjectURL(imagen1.files[0]);
-        }
-    });
+if (imagen) {
+  imagen.addEventListener("change", () => {
+    if (imagen.files.length) {
+      previewImagen.src = URL.createObjectURL(imagen.files[0]);
+    }
+  });
 }
 
 if (banner) {
@@ -121,7 +117,6 @@ if (logo) {
   });
           }
 async function publicarVehiculo() {
-  alert("Entró a publicarVehiculo");
   try {
 
     if (
@@ -131,50 +126,27 @@ async function publicarVehiculo() {
       !precio.value ||
       !km.value ||
       !descripcion.value ||
-      !(
-    imagen1.files.length ||
-    imagen2.files.length ||
-    imagen3.files.length ||
-    imagen4.files.length
-)
+      !imagen.files.length
     ) {
       alert("Completa todos los campos.");
       return;
     }
 
     estado.textContent = "Subiendo imagen...";
-const imagenes = [];
 
-const archivos = [];
+    const urlImagen = await subirACloudinary(imagen.files[0]);
 
-if (imagen1?.files?.length) archivos.push(imagen1.files[0]);
-if (imagen2?.files?.length) archivos.push(imagen2.files[0]);
-if (imagen3?.files?.length) archivos.push(imagen3.files[0]);
-if (imagen4?.files?.length) archivos.push(imagen4.files[0]);
+    await addDoc(collection(db, "vehiculos"), {
+      marca: marca.value,
+      modelo: modelo.value,
+      anio: Number(anio.value),
+      precio: Number(precio.value),
+      km: Number(km.value),
+      descripcion: descripcion.value,
+      imagen: urlImagen,
+      fecha: Date.now()
+    });
 
-for (const archivo of archivos) {
-    if (archivo) {
-        const url = await subirACloudinary(archivo);
-        imagenes.push(url);
-    }
-}
-
-if (imagenes.length === 0) {
-    alert("Debés seleccionar al menos una foto.");
-    return;
-}
-
-await addDoc(collection(db, "vehiculos"), {
-    marca: marca.value,
-    modelo: modelo.value,
-    anio: Number(anio.value),
-    precio: Number(precio.value),
-    km: Number(km.value),
-    descripcion: descripcion.value,
-    imagen: imagenes[0],   // Compatibilidad con los vehículos actuales
-    imagenes: imagenes,    // Las 4 fotos
-    fecha: Date.now()
-});
     estado.textContent = "✅ Vehículo publicado correctamente.";
 
     marca.value = "";
@@ -183,10 +155,7 @@ await addDoc(collection(db, "vehiculos"), {
     precio.value = "";
     km.value = "";
     descripcion.value = "";
-    imagen1.value = "";
-imagen2.value = "";
-imagen3.value = "";
-imagen4.value = "";
+    imagen.value = "";
 
     previewImagen.src = "";
 
@@ -196,11 +165,10 @@ imagen4.value = "";
 
   } catch (error) {
   console.error(error);
-  alert(error.stack || error.message);
-  estado.textContent = error.stack || error.message;
+  alert(error.message);
+  estado.textContent = "❌ Error al publicar el vehículo.";
   }
-  
-
+}
 
 if (publicar) {
   publicar.addEventListener("click", publicarVehiculo);
@@ -323,63 +291,6 @@ ${
 
 }
 cargarEntregasAdmin();
-async function cargarBannersAdmin() {
-
-  if (!listaBanners) return;
-
-  const referencia = doc(db, "configuracion", "principal");
-  const documento = await getDoc(referencia);
-
-  listaBanners.innerHTML = "";
-
-  if (!documento.exists()) return;
-
-  const datos = documento.data();
-
-  if (!datos.banners || !datos.banners.length) {
-    listaBanners.innerHTML = "No hay banners.";
-    return;
-  }
-
-  datos.banners.forEach((url, index) => {
-
-    listaBanners.innerHTML += `
-      <div style="margin:15px 0">
-        <img src="${url}" style="width:100%;max-width:250px;border-radius:10px;">
-        <br><br>
-        <button class="eliminarBanner" data-index="${index}">
-          🗑 Eliminar Banner
-        </button>
-      </div>
-    `;
-
-  });
-
-}
-document.addEventListener("click", async (e) => {
-
-  if (!e.target.classList.contains("eliminarBanner")) return;
-
-  const indice = Number(e.target.dataset.index);
-
-  const referencia = doc(db, "configuracion", "principal");
-  const documento = await getDoc(referencia);
-
-  if (!documento.exists()) return;
-
-  const datos = documento.data();
-
-  datos.banners.splice(indice, 1);
-
-  await setDoc(
-    referencia,
-    { banners: datos.banners },
-    { merge: true }
-  );
-
-  cargarBannersAdmin();
-
-});
 async function guardarConfiguracion() {
 
   try {
@@ -476,7 +387,7 @@ async function cargarConfiguracion() {
     if (whatsappWeb && datos.whatsapp) whatsappWeb.value = datos.whatsapp;
     if (horarioWeb && datos.horario) horarioWeb.value = datos.horario;
     if (emailWeb && datos.email)
-emailWeb.value = datos.email;
+
 if (quienesTitulo && datos.quienesTitulo)
   quienesTitulo.value = datos.quienesTitulo;
 
@@ -509,7 +420,6 @@ if (contactoTitulo && datos.contactoTitulo)
 }
 
 cargarConfiguracion();
-cargarBannersAdmin();
 
 if (cerrarSesion) {
 
@@ -581,7 +491,7 @@ await setDoc(
       previewBanner.src = urls[0];
       estadoBanner.textContent = "✅ Banners actualizados.";
       banner.value = "";
-await cargarBannersAdmin();
+
     } catch (error) {
 
       console.error(error);
