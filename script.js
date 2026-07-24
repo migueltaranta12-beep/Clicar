@@ -603,3 +603,65 @@ async function publicarEntregaFuncion() {
 if (publicarEntrega) {
   publicarEntrega.addEventListener("click", publicarEntregaFuncion);
 }
+const listaBannersAdmin = document.getElementById("listaBannersAdmin");
+
+async function cargarBannersAdmin() {
+
+  if (!listaBannersAdmin) return;
+
+  const referencia = doc(db, "configuracion", "principal");
+  const documento = await getDoc(referencia);
+
+  listaBannersAdmin.innerHTML = "";
+
+  if (!documento.exists()) return;
+
+  const datos = documento.data();
+
+  if (!datos.banners || !datos.banners.length) return;
+
+  datos.banners.forEach((url, index) => {
+
+    const tarjeta = document.createElement("div");
+
+    tarjeta.className = "vehiculo-admin";
+
+    tarjeta.innerHTML = `
+      <img src="${url}" style="width:220px;border-radius:10px;">
+      <br><br>
+      <button class="eliminarBanner" data-index="${index}">
+        🗑 Eliminar
+      </button>
+    `;
+
+    listaBannersAdmin.appendChild(tarjeta);
+
+  });
+
+  document.querySelectorAll(".eliminarBanner").forEach((boton) => {
+
+    boton.addEventListener("click", async () => {
+
+      if (!confirm("¿Eliminar este banner?")) return;
+
+      const docSnap = await getDoc(referencia);
+
+      const banners = docSnap.data().banners;
+
+      banners.splice(boton.dataset.index, 1);
+
+      await setDoc(
+        referencia,
+        { banners },
+        { merge: true }
+      );
+
+      cargarBannersAdmin();
+
+    });
+
+  });
+
+}
+
+cargarBannersAdmin();
