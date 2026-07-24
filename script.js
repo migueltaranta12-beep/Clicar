@@ -199,8 +199,8 @@ imagen4.value = "";
   alert(error.stack || error.message);
   estado.textContent = error.stack || error.message;
   }
-  }
-}
+  
+
 
 if (publicar) {
   publicar.addEventListener("click", publicarVehiculo);
