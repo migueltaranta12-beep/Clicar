@@ -292,6 +292,39 @@ ${
 
 }
 cargarEntregasAdmin();
+async function cargarBannersAdmin() {
+
+  if (!listaBanners) return;
+
+  const referencia = doc(db, "configuracion", "principal");
+  const documento = await getDoc(referencia);
+
+  listaBanners.innerHTML = "";
+
+  if (!documento.exists()) return;
+
+  const datos = documento.data();
+
+  if (!datos.banners || !datos.banners.length) {
+    listaBanners.innerHTML = "No hay banners.";
+    return;
+  }
+
+  datos.banners.forEach((url, index) => {
+
+    listaBanners.innerHTML += `
+      <div style="margin:15px 0">
+        <img src="${url}" style="width:100%;max-width:250px;border-radius:10px;">
+        <br><br>
+        <button class="eliminarBanner" data-index="${index}">
+          🗑 Eliminar Banner
+        </button>
+      </div>
+    `;
+
+  });
+
+}
 async function guardarConfiguracion() {
 
   try {
