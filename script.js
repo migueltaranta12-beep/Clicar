@@ -97,12 +97,12 @@ async function subirACloudinary(file) {
   return datos.secure_url;
 }
 
-if (imagen) {
-  imagen.addEventListener("change", () => {
-    if (imagen.files.length) {
-      previewImagen.src = URL.createObjectURL(imagen.files[0]);
-    }
-  });
+if (imagen1) {
+    imagen1.addEventListener("change", () => {
+        if (imagen1.files.length) {
+            previewImagen.src = URL.createObjectURL(imagen1.files[0]);
+        }
+    });
 }
 
 if (banner) {
