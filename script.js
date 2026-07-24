@@ -195,8 +195,9 @@ imagen4.value = "";
 
   } catch (error) {
   console.error(error);
-  alert(error.message);
-  estado.textContent = "❌ Error al publicar el vehículo.";
+  alert(error.stack || error.message);
+  estado.textContent = error.stack || error.message;
+  }
   }
 }
 
